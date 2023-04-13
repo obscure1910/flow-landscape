@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+	<flow name="flow5">
+		<poll doc:name="Poll"/>
+		<logger message="#[lookup(&quot;flow7&quot;, null)]" level="INFO" doc:name="Logger withLookupToFlow7"/>
+		<dw:transform-message doc:name="embeddedLookupToFlow6ToFlow8">
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+%var r1 = lookup("flow6", null)
+%var r2 = lookup("flow8", null)
+---
+r1 + r2]]></dw:set-payload>
+		</dw:transform-message>
+	</flow>
+	<sub-flow name="flow6">
+		<logger level="INFO" doc:name="Logger"/>
+	</sub-flow>
+	<flow name="flow7">
+		<logger level="INFO" doc:name="Logger"/>
+		<dw:transform-message doc:name="lookupExternalFile">
+			<dw:set-payload resource="classpath:mylookup.dwl"/>
+		</dw:transform-message>
+	</flow>
+	<flow name="flow8">
+		<logger level="INFO" doc:name="Logger"/>
+	</flow>
+</mule>

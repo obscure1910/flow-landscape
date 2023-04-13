@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c5fa9e53-aa85-4a4f-89a9-39c78db88290" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="flowlandscape-example-main-flow" doc:id="f29e1303-2894-44a0-953d-b42e9181147e" >
+		<http:listener doc:name="Listener" doc:id="e38d2ccd-aeeb-45ac-9315-9f8373ecc14a" config-ref="HTTP_Listener_config" path="/"/>
+		<choice doc:name="Choice" doc:id="79d43d17-9f9f-4624-bb4b-3d2e205d44eb" >
+			<when expression="#[true]">
+				<flow-ref doc:name="flowlandscape-example-sub-flow" doc:id="aaf58af3-dcda-4843-a910-3eb376aa1838" name="flowlandscape-example-sub-flow"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="call utils" doc:id="3297e41b-fe49-4196-b981-beb71b221ff7" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+Mule::lookup("flowlandscape-utils-flow", null)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<sub-flow name="flowlandscape-example-sub-flow" doc:id="9272b10d-8e36-47c8-ad14-0edf85c679a6" >
+		<logger level="INFO" doc:name="Logger" doc:id="b021570b-6ccd-4408-9d9b-0859d367e4bd" />
+	</sub-flow>
+</mule>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="flow5" doc:id="ac7b29e3-41f2-444f-9c83-8aea79d2268f" >
+		<logger level="INFO" doc:name="Logger with lookuptoFlow7" doc:id="1648920e-0c88-4efb-996f-abbb72155873" message='#[Mule::lookup("flow7", null)]'/>
+		<ee:transform doc:name="embeddedLookupToFlow6ToFlow8" doc:id="d4d7fb8d-86ef-464e-842f-b99d5b6306f0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import lookup from Mule
+
+output application/java
+var r1 = Mule::lookup("flow6", null)
+var r2 = lookup("flow8", null)
+---
+null
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<sub-flow name="flow6" doc:id="6505a2d5-6cf9-4fb5-9602-f709e9d8b985" >
+		<logger level="INFO" doc:name="Logger" doc:id="c7ab4292-6100-421b-83f1-59964bf72bd2" />
+	</sub-flow>
+	<flow name="flow7" doc:id="3d56bfa7-b3a4-455c-91b9-830c5baca701" >
+		<logger level="INFO" doc:name="Logger" doc:id="f4dc9685-b242-487b-b493-3b6226964fa0" />
+		<ee:transform doc:name="lookupInExternalFile" doc:id="e0ba8c17-8aed-444b-8a00-1ba63e85a480" >
+			<ee:message >
+				<ee:set-payload resource="mylookup.dwl" />
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="flow8" doc:id="54dc18de-e9f3-4e87-8046-02ae08a0c3ec" >
+		<logger level="INFO" doc:name="Logger" doc:id="98411d95-b1b1-4cd9-946b-5191d58ff99d" />
+	</flow>
+</mule>

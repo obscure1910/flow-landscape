@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="flow1" doc:id="e4a64acc-950f-4a31-8a5b-5b80cf8f1ead" >
+		<logger level="INFO" doc:name="Logger" doc:id="599fe3c7-2838-40d4-9ac8-d7814bf1bcc0" />
+		<choice doc:name="Choice" doc:id="f6062a76-c937-461e-842d-5aa84652078a" >
+			<when expression="#[true]">
+				<flow-ref doc:name="to flow2" doc:id="f9b1389a-adea-4f30-a731-c7d82620e281" name="flow2" />
+			</when>
+			<otherwise >
+				<flow-ref doc:name="to flow4" doc:id="4333c3d7-4e7f-4b0c-8ba4-2390c36e2dae" name="flow4" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="flow2" doc:id="becb21e7-8e0f-4877-81ad-fdd9f6b2cb0f" >
+		<logger level="INFO" doc:name="Logger" doc:id="3ac82b18-555f-45b7-8977-d6c55a4644dd" />
+		<foreach doc:name="For Each" doc:id="8b28685e-0826-4ca3-bfdf-298c332c6ee1" collection="#[[]]">
+			<flow-ref doc:name="to flow3" doc:id="bb06a1c6-6c62-4353-88c7-85e4ba102497" name="flow3" />
+		</foreach>
+	</flow>
+	<flow name="flow3" doc:id="dd108aa4-2694-43b0-9292-37b1547e41aa" >
+		<logger level="INFO" doc:name="Logger" doc:id="6a6ba3d7-6ee3-46ef-b15b-0329f65f9166" />
+	</flow>
+	<flow name="flow4" doc:id="933e3bd4-58ed-4f1f-97af-f84fcc2f7fae" >
+		<logger level="INFO" doc:name="Logger" doc:id="247326f6-6251-46f1-8c07-8764ccf2e46e" />
+		<flow-ref doc:name="to flow5" doc:id="522a2efe-3d3c-482c-a967-d6c7f4400409" name="flow5"/>
+	</flow>
+</mule>
