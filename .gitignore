@@ -1,0 +1,45 @@
+# Ignore target directories in all modules
+**/target/
+
+# Ignore Maven generated files in all modules
+**/pom.xml.*
+**/mvnw
+**/mvnw.cmd
+**/.mvn/
+
+# Ignore IntelliJ IDEA files in all modules
+**/*.iml
+**/.idea/
+
+# Ignore Eclipse files in all modules
+**/.classpath
+**/.project
+**/.settings/
+
+# Ignore NetBeans files in all modules
+**/nbproject/
+
+# Ignore Visual Studio Code files in all modules
+**/.vscode/
+
+# Ignore build logs in all modules
+**/build.log
+**/build.log.*
+
+# Ignore build artifacts in all modules
+**/build/
+**/dist/
+
+# Ignore release artifacts in all modules
+**/RELEASE_NOTES.txt
+**/CHANGES.txt
+
+# Ignore generated code in all modules
+**/generated/
+
+#mule
+**/.mule
+**/.metadata/
+**/exchange-docs/
+
+release.properties

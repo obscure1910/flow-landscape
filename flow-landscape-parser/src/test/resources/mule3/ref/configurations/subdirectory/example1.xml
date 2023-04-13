@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<flow name="flow1">
+		<logger level="INFO" doc:name="Logger"/>
+		<choice doc:name="Choice">
+			<when expression="true">
+				<flow-ref name="flow2" doc:name="to flow2"/>
+			</when>
+			<otherwise>
+				<flow-ref name="flow4" doc:name="to flow4"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="flow2">
+		<logger level="INFO" doc:name="Logger"/>
+		<foreach collection="[]" doc:name="For Each">
+			<flow-ref name="flow3" doc:name="to flow3"/>
+		</foreach>
+	</flow>
+	<flow name="flow3">
+		<logger level="INFO" doc:name="Logger"/>
+	</flow>
+	<sub-flow name="flow4">
+		<logger level="INFO" doc:name="Logger"/>
+		<flow-ref name="flow5" doc:name="to flow5"/>
+	</sub-flow>
+</mule>

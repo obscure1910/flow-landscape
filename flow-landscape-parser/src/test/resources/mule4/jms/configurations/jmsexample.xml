@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="00515959-627e-4432-b811-011b18dda413" >
+		<jms:active-mq-connection />
+	</jms:config>
+	<flow name="jms-flow1" doc:id="6f1b34ec-59f3-45a4-95cc-2abc4b67866f" >
+		<logger level="INFO" doc:name="Logger" doc:id="f27fe688-e1a0-47fe-9479-f838000fbf85" />
+		<jms:publish doc:name="Publish" doc:id="ef33d72d-eaef-439c-9b8c-8af254ecf3d0" destination="myqueue"/>
+	</flow>
+	<flow name="jms-flow2" doc:id="0f3e7204-b3cd-4187-81f6-1111f79f6fd7" >
+		<jms:listener doc:name="On New Message" doc:id="935f97b9-c239-4b42-af68-a2daf506a4c8" config-ref="JMS_Config" destination="myqueue"/>
+		<logger level="INFO" doc:name="Logger" doc:id="4e476577-3d9c-47c5-b8bc-d44f37351d2f" />
+	</flow>
+	<flow name="jms-flow3" doc:id="581056b9-6c1a-4974-b135-d4922a263e45" >
+		<logger level="INFO" doc:name="Logger" doc:id="39afe364-8d09-43b9-9264-f18490c68fb3" />
+		<jms:consume doc:name="Consume" doc:id="63baf092-2cce-45c2-a7f8-285399208199" destination="myqueue"/>
+	</flow>
+</mule>

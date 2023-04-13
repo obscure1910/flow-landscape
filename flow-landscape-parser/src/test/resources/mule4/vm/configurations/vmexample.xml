@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="00515959-627e-4432-b811-011b18dda413" >
+		<jms:active-mq-connection />
+	</jms:config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="ecd2f3b2-969b-46cd-8ffa-547de812ddb5" queues="" />
+	<flow name="vm-flow1" doc:id="6f1b34ec-59f3-45a4-95cc-2abc4b67866f" >
+		<logger level="INFO" doc:name="Logger" doc:id="f27fe688-e1a0-47fe-9479-f838000fbf85" />
+		<vm:publish doc:name="Publish" doc:id="32a5f7e5-7fc3-4b1a-9e5d-de3bd0f18543" config-ref="VM_Config" queueName="myqueue" sendCorrelationId="AUTO"/>
+	</flow>
+	<flow name="vm-flow2" doc:id="0f3e7204-b3cd-4187-81f6-1111f79f6fd7" >
+		<vm:listener doc:name="Listener" doc:id="63878944-55d5-4cb0-9523-b89b2a9fbd66" config-ref="VM_Config" queueName="myqueue"/>
+		<logger level="INFO" doc:name="Logger" doc:id="4e476577-3d9c-47c5-b8bc-d44f37351d2f" />
+	</flow>
+	<flow name="vm-flow3" doc:id="581056b9-6c1a-4974-b135-d4922a263e45" >
+		<logger level="INFO" doc:name="Logger" doc:id="39afe364-8d09-43b9-9264-f18490c68fb3" />
+		<vm:consume doc:name="Consume" doc:id="6b88f1c5-13db-4711-8b32-59fb6c5bbf81" config-ref="VM_Config" queueName="myqueue"/>
+	</flow>
+</mule>
