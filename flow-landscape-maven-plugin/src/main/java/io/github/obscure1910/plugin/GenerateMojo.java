@@ -1,4 +1,4 @@
-package de.obscure;
+package io.github.obscure1910.plugin;
 
 import io.github.obscure1910.flowlandscape.api.*;
 import io.github.obscure1910.flowlandscape.generator.GraphvizFlowLandscape;
