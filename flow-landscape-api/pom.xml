@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>flow-landscape-api</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>flow-landscape-api</name>
   <description>A simple flow-landscape-api.</description>
@@ -13,7 +13,7 @@
   <parent>
     <groupId>io.github.obscure1910</groupId>
     <artifactId>flow-landscape</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <properties>
