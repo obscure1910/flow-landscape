@@ -26,7 +26,7 @@
 
   <scm>
     <connection>scm:git:git://github.com/obscure1910/flow-landscape</connection>
-    <developerConnection>scm:git:ssh://github.com/obscure1910/flow-landscape.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com/obscure1910/flow-landscape.git</developerConnection>
     <url>https://github.com/obscure1910/flow-landscape/tree/main</url>
     <tag>flow-landscape-1.0.0</tag>
   </scm>
