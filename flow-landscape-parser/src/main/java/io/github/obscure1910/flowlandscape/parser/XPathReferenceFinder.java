@@ -115,8 +115,10 @@ public class XPathReferenceFinder implements ReferenceFinder {
 
     protected Document getDocument(File file) {
         try {
-            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = builderFactory.newDocumentBuilder();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
+            dbf.setXIncludeAware(false);
+            DocumentBuilder builder = dbf.newDocumentBuilder();
             return builder.parse(Files.newInputStream(file.toPath()));
         } catch (IOException | ParserConfigurationException | SAXException ex) {
             throw new RuntimeException(ex);
