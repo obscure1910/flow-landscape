@@ -32,7 +32,7 @@ Add this plugin to your pom.xml
 
 ## example
 
-In the Folder `flowlandscape-example` is an Mule4 application that generates the following diagram
+In the Folder `flowlandscape-example` is a Mule4 application that generates the following diagram
 
 <img src="flowlandscape-example/flowlandscape/flowlandscape.png"
      alt="Markdown Monster icon"
