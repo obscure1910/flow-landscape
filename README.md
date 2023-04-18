@@ -9,7 +9,7 @@ Add this plugin to your pom.xml
     <plugin>
         <groupId>io.github.obscure1910</groupId>
         <artifactId>flow-landscape-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <executions>
             <execution>
                 <goals>
