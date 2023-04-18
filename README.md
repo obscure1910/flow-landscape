@@ -32,7 +32,7 @@ Add this plugin to your pom.xml
 
 ## example
 
-In the Folder `flowlandscape-example` is an Mule4 application that generate the following diagramm
+In the Folder `flowlandscape-example` is an Mule4 application that generates the following diagram
 
 <img src="flowlandscape-example/flowlandscape/flowlandscape.png"
      alt="Markdown Monster icon"
@@ -41,4 +41,4 @@ In the Folder `flowlandscape-example` is an Mule4 application that generate the 
 ## limitations
 
 - only static dependencies via flow-ref or lookup can be detected (no variables as target)
-- lookups in dataweave files do not go recursive through the import statements
+- lookups in DataWeave files do not go recursive through the import statements

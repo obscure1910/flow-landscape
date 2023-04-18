@@ -29,7 +29,7 @@ public class GraphvizFlowLandscape implements FlowLandscapeGenerator {
     public void generateConfigurations(List<ConfigurationHolder> configurations, GeneratorProperties generatorProperties) {
         Set<GraphvizFlow> allNodes = configurations.stream().flatMap(configuration -> configuration.getFlows().stream().map(flow -> {
             String clusterName = configuration.getName();
-            return new GraphvizFlow(flow, clusterName);
+            return new GraphvizFlow(flow, "[ " + clusterName + " ]"); //with a brackets because otherwise the global.xml will be ignored
         })).collect(toSet());
 
         Stream<GraphvizFlow> allNodesWithLinks = foldLeft(allNodes.stream(), empty(), (acc, graphvizFlow) ->

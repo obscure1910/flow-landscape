@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file"  
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:spring="http://www.mulesoft.org/schema/mule/spring"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"	
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:sap="http://www.mulesoft.org/schema/mule/sap" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/spring http://www.mulesoft.org/schema/mule/spring/current/mule-spring.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sap http://www.mulesoft.org/schema/mule/sap/current/mule-sap.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="hvac-unneeded-material-app-polling-cancellation-flow" doc:id="72314e74-7774-4b34-b087-c06ed676670f" >
+		<scheduler doc:name="Scheduler" doc:id="a8f64644-606c-47a6-a147-3a5a6c87235d" >
+			<scheduling-strategy >
+				<cron expression="${polling.cancellation}" />
+			</scheduling-strategy>
+		</scheduler>
+
+		<flow-ref doc:name="hvac-unneeded-material-app-cancellation-flow" doc:id="daf2e8af-6839-46de-ad1a-3030468a6cb3" name="hvac-unneeded-material-app-cancellation-flow"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="false" doc:name="On Error Propagate" doc:id="229e34df-9399-4699-8b63-046075877eac" type="ANY"/>
+		</error-handler>
+	
+	</flow>
+	<flow name="hvac-unneeded-material-app-polling-scrapping-flow" doc:id="3905c0f6-6b69-408d-aa43-497628816cbb" >
+		<scheduler doc:name="Scheduler" doc:id="ff035da4-1dba-4abe-b578-a98a462a5937" >
+			<scheduling-strategy >
+				<cron expression="${polling.scrapping}" />
+			</scheduling-strategy>
+		</scheduler>
+		<flow-ref doc:name="hvac-unneeded-material-app-scrapping-flow" doc:id="989166a0-a154-4f64-a92d-efc360945708" name="hvac-unneeded-material-app-scrapping-flow"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="false" doc:name="On Error Propagate" doc:id="7e2b52b1-0809-4b61-82a7-7a60ac4eae6d" type="ANY"/>
+		</error-handler>
+	</flow>
+
+
+</mule>

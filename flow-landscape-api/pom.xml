@@ -7,8 +7,7 @@
 
   <name>flow-landscape-api</name>
   <description>A simple flow-landscape-api.</description>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/obscure1910/flow-landscape</url>
 
   <parent>
     <groupId>io.github.obscure1910</groupId>

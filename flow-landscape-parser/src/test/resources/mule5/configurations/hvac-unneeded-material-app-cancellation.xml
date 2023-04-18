@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd">
+	
+<sub-flow name="hvac-unneeded-material-app-cancellation-flow" doc:id="8db4dfde-e4a7-479d-a357-825517bf3de0" >
+		<logger level="DEBUG" doc:name="DEBUG Start cancellation" doc:id="8cbb0110-7a67-4ddd-b0ae-daa86c6a2466" message="Start cancellation!" category="de.meyerwerft.integration.hvac_unneededmaterial_app"/>
+		<flow-ref doc:name="hvac-unneededmaterial-app-cancellation-get-stock-information-flow" doc:id="d87585d3-0ea4-4905-96d1-95988dee7945" name="hvac-unneeded-material-app-cancellation-get-stock-information-flow"/>
+		<logger level="DEBUG" doc:name="DEBUG result" doc:id="b04af29c-94a1-4e97-8d0e-4ab42d96e60d" message="#[&quot;Collected stock information: &quot; ++ write(payload, 'application/json', {indent: false})]" category="de.meyerwerft.integration.hvac_unneededmaterial_app" />
+		<choice doc:name="any parts found" doc:id="d8df33c6-ee56-4961-910d-d60b51d765ac" >
+			<when expression="#[not isEmpty(payload)]">
+				<flow-ref doc:name="hvac-unneeded-material-app-cancellation-order-cancellation-flow" doc:id="fdbd2b86-4179-4851-a19b-f864acca912f" name="hvac-unneeded-material-app-cancellation-order-cancellation-flow"/>
+			</when>
+			<otherwise >
+				<logger level="DEBUG" doc:name="DEBUG No parts found" doc:id="0a3d259b-374e-498b-baf8-0a940eaa355d" message="No unneeded material were found" category="de.meyerwerft.integration.hvac_unneededmaterial_app" />
+			</otherwise>
+		</choice>
+	
+</sub-flow>
+	<sub-flow name="hvac-unneeded-material-app-cancellation-get-stock-information-flow" doc:id="f78e22ba-72ef-44ae-b1d3-26bd8324a0e2" >
+		<flow-ref doc:name="hvac-unneeded-material-app-retrieve-unneeded-material-flow" doc:id="77ca2f72-a1ea-4526-98eb-ef9fc8dfb644" name="hvac-unneeded-material-app-retrieve-unneeded-material-flow"/>
+		<choice doc:name="Choice unneded matieral found" doc:id="e751e7ce-efef-4fb5-9d8c-4929e232af04" >
+			<when expression="#[not isEmpty(payload)]">
+				<logger level="INFO" doc:name="INFO Unneeded material found" doc:id="a73f3729-0594-4c7f-89ee-c4aa69ab1033" category="de.meyerwerft.integration.hvac_unneededmaterial_app" message="#[&quot;Found unneeded material: &quot; ++ write(payload, 'application/json', {indent: false})]"/>
+				<flow-ref doc:name="hvac-unneeded-material-app-collect-stock-information-flow" doc:id="f8397282-fdb7-4cb8-aa05-034f0040e205" name="hvac-unneeded-material-app-cancellation-collect-stock-information-flow" />
+			</when>
+			<otherwise >
+				<logger level="DEBUG" doc:name="DEBUG No unneeded material were found" doc:id="d8546ffe-382a-4a7f-9dad-bfe6927a65a9" message="No unneeded material were found" category="de.meyerwerft.integration.hvac_unneededmaterial_app"/>
+				<set-payload value="#[[]]" doc:name="empty payload" doc:id="d0a9cb21-1510-436f-8bd6-4dde1fab8be0" />
+			</otherwise>
+		</choice>
+	
+</sub-flow>
+	<sub-flow name="hvac-unneeded-material-app-cancellation-order-cancellation-flow" doc:id="09bc050b-473d-4ce5-8b6c-5c058b46e19e" >
+		<flow-ref doc:name="hvac-unneeded-material-app-cancellation-cancel-parts-flow" doc:id="bb3c6017-92ae-4253-967d-514b8dffc38c" name="hvac-unneeded-material-app-cancellation-cancel-parts-flow" target="ordersCancelled"/>
+		<set-variable value="#[[]]" doc:name="ordersCancelledAndEmailaddresses" doc:id="20ca66f2-1b84-41e1-9115-19ebe8916b68" variableName="ordersCancelledAndEmailaddresses"/>
+		<foreach doc:name="For Each cancelled order" doc:id="9d71d93e-4159-4893-979b-e20090f8dcd0" collection="#[vars.ordersCancelled]">
+			<flow-ref doc:name="hvac-unneeded-material-app-cancellation-get-emailadress-of-order-flow" doc:id="44f9238f-d2a2-47f1-91da-b2b3fb24ba9d" name="hvac-unneeded-material-app-cancellation-get-emailadress-of-order-flow" target="emailAddresses"/>
+			<ee:transform doc:name="add emailAddresses to cancelled order" doc:id="561a6167-f939-4550-9250-3c3884a61351" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="ordersCancelledAndEmailaddresses" ><![CDATA[%dw 2.0
+output application/java
+---
+vars.ordersCancelledAndEmailaddresses + (payload ++ vars.emailAddresses)]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		<choice doc:name="are orders cancelled?" doc:id="433cc041-bac1-42d6-8dc5-10912172fea8" >
+			<when expression="#[not isEmpty(vars.ordersCancelledAndEmailaddresses)]">
+				<ee:transform doc:name="group by Cancellation not possible" doc:id="f1de99dd-b8d7-46c6-aad0-cf38a477dbad" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable resource="mapping/groupedCancellation.dwl" variableName="groupedCancellation" />
+					</ee:variables>
+				</ee:transform>
+				<foreach doc:name="For Each cancellation" doc:id="31c935ba-d108-45ee-bcc9-992c94a48310" collection="#[vars.groupedCancellation]">
+					<ee:transform doc:name="wsRequest" doc:id="1c93e83f-c44e-40c2-b3c6-4f1913878ab7">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="wsRequest"><![CDATA[%dw 2.0
+output application/xml  
+
+ns ns0 http://isometrie.rohrfertigung.ro.meyerwerft.de/
+---
+{
+  ns0#setzeTeileStatus: {
+    (payload.arg0 map {
+      arg0: ($)
+    }),
+    arg1: payload.arg1
+  }
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+					<wsc:consume operation="setzeTeileStatus" doc:name="setzeTeileStatus" doc:id="31af8c11-33a9-42f7-b33c-b9ff14e79791" config-ref="RohrisometrieBean_Config"/>
+				</foreach>
+				<ee:transform doc:name="wsRequest" doc:id="5435a08a-7072-44dd-a7d5-2e64b44ffda9" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="wsRequest" ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://isometrie.rohrfertigung.ro.meyerwerft.de/
+
+---
+{
+  ns0#loeschenBestelldaten: {
+    (flatten(vars.groupedCancellation.arg0) map {
+      bestelldaten: {
+        ($)
+      }
+    })
+  }
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<wsc:consume doc:name="loeschenBestelldaten" doc:id="6a9dfe23-c83e-4c20-8d86-bcda10a8bd9a" config-ref="RohrisometrieBean_Config" operation="loeschenBestelldaten" target="deletedOrderInformation">
+					<wsc:message >
+						<wsc:body ><![CDATA[#[vars.wsRequest]]]></wsc:body>
+					</wsc:message>
+				</wsc:consume>
+				<foreach doc:name="For Each cancelled order" doc:id="ba90a070-b607-40d8-bf50-f156f280a864" collection="#[vars.ordersCancelledAndEmailaddresses]">
+					<flow-ref doc:name="hvac-unneeded-material-email-queue-email-cancellation-flow" doc:id="c870f8a4-6bd4-4ac7-971e-8a199410accd" name="hvac-unneeded-material-email-queue-email-cancellation-flow"/>
+				</foreach>
+			</when>
+			<otherwise >
+				<logger level="DEBUG" doc:name="DEBUG No orders cancelled" doc:id="f6506262-6dc3-44d6-9839-220aef2e570d" message="No orders cancelled" category="de.meyerwerft.integration.hvac_unneededmaterial_app"/>
+			</otherwise>
+		</choice>
+	
+</sub-flow>
+	<sub-flow name="hvac-unneeded-material-app-cancellation-cancel-parts-flow" doc:id="eae90bfc-47fc-4cef-afe1-c18951023bd4" >
+		<ee:transform doc:name="prepare ws request" doc:id="04d9f1ed-dd6c-48ed-ab8f-7ee5ddbb77bf">
+			<ee:message>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="wsRequest" ><![CDATA[%dw 2.0
+output application/xml  
+ns ns0 http://bestellung.bestellwesen.ek.meyerwerft.de/
+---
+{
+  ns0#stornierenHVACTeile: {
+    (payload map {
+      bedarfInfoListe: {
+        mandant: $.mandant,
+        bedarfnummer: $.bedarfNummer,
+        bedarfUnterposition: $.bedarfUnterposition
+      }
+    })
+  }
+}]]></ee:set-variable>
+			</ee:variables>
+		
+</ee:transform>
+		<wsc:consume operation="stornierenHVACTeile" doc:name="stornierenHVACTeile" doc:id="1f17aecb-7342-41e6-b9bc-5fb2b2eea8ec" config-ref="BestellungBean_Config" target="wsResponseStornierenHVACTeile">
+			<wsc:message >
+				<wsc:body ><![CDATA[#[vars.wsRequest]]]></wsc:body>
+			</wsc:message>
+		</wsc:consume>
+		<logger level="INFO" doc:name="INFO Cancelled parts" doc:id="65dd993b-cfdf-4bcb-a144-e97787bbfb45" message="#[&quot;Cancelled parts: &quot; ++ write(vars.wsResponseStornierenHVACTeile.body, 'application/json', {indent: false})]" category="de.meyerwerft.integration.hvac_unneededmaterial_app" />
+		<ee:transform doc:name="extract cancelled orders" doc:id="608719b0-93eb-496a-9a4a-bbff8505df4e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://bestellung.bestellwesen.ek.meyerwerft.de/
+
+output application/java 
+
+var response = vars.wsResponseStornierenHVACTeile.body.ns0#stornierenHVACTeileResponse.*return default []
+---
+
+(response map {
+	  bestellJahr: $.bestellJahr,
+	  bestellNummer: $.bestellNummer,
+	  mandant: $.mandant,
+	  personalnummerEinkaeufer: $.personalnummerEinkaeufer,
+	  storniertePositionen: ($.*storniertePositionen map ((i) -> {
+	    bedarfUnterposition: i.bedarfUnterposition,
+	    bedarfNummer: i.bedarfnummer,
+	    bedarfstext: i.bedarfstext,
+	    bestellposition: i.bestellposition,
+	    mandant: i.mandant,
+	    stornierungNichtMoeglich: i.stornierungNichtMoeglich
+	  })) default []
+	}
+) filter (not isEmpty($.storniertePositionen))]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	
+</sub-flow>
+	<sub-flow name="hvac-unneeded-material-app-cancellation-get-emailadress-of-order-flow" doc:id="e4095d43-5a61-459c-9c25-bf9a32c2cae6" >
+		<ee:transform doc:name="prepare ws request" doc:id="9de6861e-8b2a-4ffe-b3b5-f79e06366403" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="wsRequest" ><![CDATA[%dw 2.0
+output application/xml  
+
+ns ns0 http://bestellung.bestellwesen.ek.meyerwerft.de/
+---
+{
+  ns0#getHVACStammdatenZuBestellung: {
+    mandant: payload.mandant,
+    bestellnummer: payload.bestellNummer,
+    bestelljahr: payload.bestellJahr
+  }
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:cache doc:name="Cache order information" doc:id="977760d3-bd43-47ff-9f72-306c58cbfe39" cachingStrategy-ref="orderInformation-caching-strategy">
+			<wsc:consume operation="getHVACStammdatenZuBestellung" doc:name="getHVACStammdatenZuBestellung" doc:id="0ef79fa8-92b3-4e8c-994c-55e9d98a7fad" config-ref="BestellungBean_Config" target="wsResponseGetHVACStammdatenZuBestellung">
+				<wsc:message >
+					<wsc:body ><![CDATA[#[vars.wsRequest]]]></wsc:body>
+				</wsc:message>
+			</wsc:consume>
+			<ee:transform doc:name="extract email adress" doc:id="e028d5d5-c608-4509-bf82-8e1f15fb6976" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	emailAddresses: vars.wsResponseGetHVACStammdatenZuBestellung.body.getHVACStammdatenZuBestellungResponse.return.emailadressen,
+	emailAddressesCC: vars.wsResponseGetHVACStammdatenZuBestellung.body.getHVACStammdatenZuBestellungResponse.return.emailadressenCC
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</ee:cache>
+		<logger level="INFO" doc:name="Logger" doc:id="ce3cb686-bf23-4d1b-81b2-66ac1744f0a9" />
+	</sub-flow>
+	<sub-flow name="hvac-unneeded-material-app-cancellation-collect-stock-information-flow" doc:id="c238e9d3-34e7-485a-8442-64265cf6e9fd" >
+		<set-variable value="#[[]]" doc:name="stockInformation" doc:id="bb9241b0-0847-44de-880c-d2084e3ceee5" variableName="stockInformation" />
+		<foreach doc:name="For Each unneeded material" doc:id="1057b848-5633-471e-9b15-793001e8489c" collection="#[payload]" batchSize="50" >
+			<ee:transform doc:name="prepare ws request" doc:id="bc695b2f-621c-4259-8483-4c65ab586750" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable resource="mapping/determine_stocks.dwl" variableName="wsRequest" />
+				</ee:variables>
+			</ee:transform>
+			<wsc:consume operation="ermittelnBestaende" doc:name="ermittelnBestaende" doc:id="335b7c33-9f62-4394-8321-9bdbf5b14b6c" config-ref="ArbeitspaketeBean_Config" target="batchStockInformation" >
+				<wsc:message >
+					<wsc:body ><![CDATA[#[vars.wsRequest]]]></wsc:body>
+				</wsc:message>
+			</wsc:consume>
+			<ee:transform doc:name="match batchStockInformation with payload and join" doc:id="437c76c8-4b92-4272-a7b6-e264473958fb" >
+				<ee:message >
+					<ee:set-payload resource="mapping/determine_unneeded_material.dwl" />
+				</ee:message>
+			</ee:transform>
+			<ee:transform doc:name="add payload to stockInformation" doc:id="9f576603-c633-41f1-9f4c-0386bc4b7a4f" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="stockInformation" ><![CDATA[%dw 2.0
+output application/java
+---
+vars.stockInformation ++ payload]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		<set-payload value="#[vars.stockInformation]" doc:name="stockInformation as payload" doc:id="793756cd-6bd8-4712-8b51-425396365934" />
+	</sub-flow>
+
+</mule>
