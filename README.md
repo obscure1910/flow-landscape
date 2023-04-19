@@ -4,6 +4,9 @@ This plugin creates a component overview of all flows and shows their dependenci
 
 ## install
 
+All released versions are available via [mvnrepository.com](https://mvnrepository.com/search?q=io.github.obscure1910)
+
+
 Add this plugin to your pom.xml
 
     <plugin>
