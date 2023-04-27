@@ -1,2 +1,4 @@
-package io.github.obscure1910.flowlandscape.api.ref;public class AsyncReferenceHolder {
+package io.github.obscure1910.flowlandscape.api.ref;
+
+public interface AsyncReferenceHolder extends ReferenceHolder {
 }

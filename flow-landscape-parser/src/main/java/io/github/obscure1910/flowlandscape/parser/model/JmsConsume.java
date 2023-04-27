@@ -1,18 +1,19 @@
 package io.github.obscure1910.flowlandscape.parser.model;
 
-import io.github.obscure1910.flowlandscape.api.flow.AsyncFlowHolder;
-import io.github.obscure1910.flowlandscape.api.ref.ReferenceHolder;
+import io.github.obscure1910.flowlandscape.api.connection.ConnectionRegistry;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncConsumeHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
 
-import java.util.List;
 import java.util.Objects;
 
-public class JmsConsume extends Flow implements AsyncFlowHolder {
+public class JmsConsume implements AsyncConsumeHolder {
 
     private final String destinationName;
+    private final ConnectionRegistry connectionRegistry;
 
-    public JmsConsume(String destinationName, String flowName, List<ReferenceHolder> flowReferences) {
-        super(flowName, flowReferences);
+    public JmsConsume(String destinationName, ConnectionRegistry connectionRegistry) {
         this.destinationName = destinationName;
+        this.connectionRegistry = connectionRegistry;
     }
 
     @Override
@@ -21,14 +22,19 @@ public class JmsConsume extends Flow implements AsyncFlowHolder {
     }
 
     @Override
+    public boolean hasSameDestination(AsyncPublishHolder other) {
+        return connectionRegistry.hasSameDestination(this, other);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        JmsConsume asyncFlow = (JmsConsume) o;
+        JmsConsume that = (JmsConsume) o;
 
-        return Objects.equals(destinationName, asyncFlow.destinationName);
+        return Objects.equals(destinationName, that.destinationName);
     }
 
     @Override
@@ -37,4 +43,5 @@ public class JmsConsume extends Flow implements AsyncFlowHolder {
         result = 31 * result + (destinationName != null ? destinationName.hashCode() : 0);
         return result;
     }
+
 }

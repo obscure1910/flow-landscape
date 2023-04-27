@@ -4,11 +4,13 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Node;
-import io.github.obscure1910.flowlandscape.api.ReferenceHolder;
-import io.github.obscure1910.flowlandscape.api.FlowHolder;
-import io.github.obscure1910.flowlandscape.api.ReferenceCallType;
+import io.github.obscure1910.flowlandscape.api.flow.FlowHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
+import io.github.obscure1910.flowlandscape.api.ref.FlowRefReferenceHolder;
+import io.github.obscure1910.flowlandscape.api.ref.ReferenceHolder;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static guru.nidi.graphviz.model.Factory.node;
 import static guru.nidi.graphviz.model.Link.to;
@@ -21,7 +23,7 @@ public class GraphvizFlow {
 
     public GraphvizFlow(FlowHolder flowHolder, String clusterName) {
         this.flowHolder = flowHolder;
-        this.node = node(flowHolder.getName()).with(Shape.RECTANGLE, Color.WHEAT1.striped());
+        this.node = node(flowHolder.getFlowName()).with(Shape.RECTANGLE, Color.WHEAT1.striped());
         this.clusterName = clusterName;
     }
 
@@ -32,21 +34,48 @@ public class GraphvizFlow {
     }
 
     public GraphvizFlow addLinkTo(GraphvizFlow other) {
-        ReferenceCallType rfct = this.flowHolder.getFlowReferences().stream()
-                .filter(fh -> fh.getReferenceToFlowName().equals(other.flowHolder.getName()))
-                .map(ReferenceHolder::getReferenceCallType)
-                .findFirst()
-                .get();
-        if(rfct == ReferenceCallType.FLOW) {
-            return new GraphvizFlow(this.flowHolder, node.link(to(other.node)), this.clusterName);
-        } else {
-            return new GraphvizFlow(this.flowHolder, node.link(to(other.node).with(Color.RED, Style.DASHED)), this.clusterName);
-        }
+        Optional<AsyncPublishHolder> optArh = this.flowHolder
+                .getAsyncPublisher()
+                .stream()
+                .filter(p ->
+                        other.flowHolder
+                                .getAsyncConsumer()
+                                .stream()
+                                .anyMatch(s -> s.hasSameDestination(p))
+                )
+                .findFirst();
+        Optional<ReferenceHolder> optRh = this.flowHolder.getFlowReferences().stream()
+                .filter(fh -> fh.getDestinationName().equals(other.flowHolder.getFlowName()))
+                .findFirst();
+
+        return optRh
+                .map(rh -> {
+                    if (rh instanceof FlowRefReferenceHolder) {
+                        return new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget())), this.clusterName);
+                    } else {
+                        return new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget()).with(Color.RED, Style.DASHED)), this.clusterName);
+                    }
+                })
+                .orElseGet(() ->
+                        optArh
+                                .map(arh -> new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget()).with(Color.CYAN)), this.clusterName))
+                                .orElse(this)
+                );
     }
 
     public boolean isReferencedBy(GraphvizFlow other) {
-        return other.flowHolder.getFlowReferences().stream()
-                .anyMatch(referenceHolder -> referenceHolder.getReferenceToFlowName().equals(flowHolder.getName()));
+        boolean hasAsyncReference = this.flowHolder
+                .getAsyncConsumer()
+                .stream()
+                .anyMatch(s ->
+                        other.flowHolder
+                                .getAsyncPublisher()
+                                .stream()
+                                .anyMatch(p -> p.hasSameDestination(s))
+                );
+        boolean hasFlowReference = other.flowHolder.getFlowReferences().stream()
+                .anyMatch(referenceHolder -> referenceHolder.getDestinationName().equals(flowHolder.getFlowName()));
+        return hasFlowReference || hasAsyncReference;
     }
 
     @Override
@@ -56,11 +85,25 @@ public class GraphvizFlow {
 
         GraphvizFlow that = (GraphvizFlow) o;
 
-        return Objects.equals(flowHolder, that.flowHolder);
+        if (!Objects.equals(flowHolder, that.flowHolder)) return false;
+        if (!Objects.equals(node, that.node)) return false;
+        return Objects.equals(clusterName, that.clusterName);
     }
 
     @Override
     public int hashCode() {
-        return flowHolder != null ? flowHolder.hashCode() : 0;
+        int result = flowHolder != null ? flowHolder.hashCode() : 0;
+        result = 31 * result + (node != null ? node.hashCode() : 0);
+        result = 31 * result + (clusterName != null ? clusterName.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "GraphvizFlow{" +
+                "flowHolder=" + flowHolder +
+                ", node=" + node +
+                ", clusterName='" + clusterName + '\'' +
+                '}';
     }
 }

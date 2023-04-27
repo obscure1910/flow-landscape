@@ -1,9 +1,14 @@
 package io.github.obscure1910.flowlandscape.parser;
 
-import io.github.obscure1910.flowlandscape.api.*;
-import io.github.obscure1910.flowlandscape.parser.model.Configuration;
-import io.github.obscure1910.flowlandscape.parser.model.Flow;
-import io.github.obscure1910.flowlandscape.parser.model.Reference;
+import io.github.obscure1910.flowlandscape.api.ConfigurationHolder;
+import io.github.obscure1910.flowlandscape.api.ReferenceFinder;
+import io.github.obscure1910.flowlandscape.api.ReferenceFinderProperties;
+import io.github.obscure1910.flowlandscape.api.connection.ConnectionRegistry;
+import io.github.obscure1910.flowlandscape.api.flow.FlowHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncConsumeHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
+import io.github.obscure1910.flowlandscape.api.ref.ReferenceHolder;
+import io.github.obscure1910.flowlandscape.parser.model.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -25,13 +30,14 @@ import static io.github.obscure1910.flowlandscape.parser.PathFunctions.withXmlFi
 import static io.github.obscure1910.flowlandscape.parser.StreamFunctions.asStream;
 import static io.github.obscure1910.flowlandscape.parser.StreamFunctions.streamConcat;
 import static io.github.obscure1910.flowlandscape.parser.XPathFunctions.withXPath;
-
+import static io.github.obscure1910.flowlandscape.parser.XPathFunctions.withXPathNS;
 import static java.util.stream.Collectors.toList;
 import static javax.xml.xpath.XPathConstants.NODESET;
 
 public class XPathReferenceFinder implements ReferenceFinder {
 
     private final Pattern lookupsInString = Pattern.compile("(?<=((Mule::|\\s|\\[|\\()lookup)(\\(\")).*(?=\")");
+    private final ConnectionRegistry connectionRegistry = new KnownConnections();
 
     @Override
     public List<ConfigurationHolder> findReferences(ReferenceFinderProperties referenceFinderProperties) {
@@ -45,7 +51,9 @@ public class XPathReferenceFinder implements ReferenceFinder {
                                 getReferencesInAttribute(n),
                                 getReferencesInDataweaveFile(n, referenceFinderProperties.getResourceDirectory())
                         ).collect(toList());
-                        return new Flow(getNameOfFlow(n), references);
+                        List<AsyncPublishHolder> asyncPublishHolders = getAsyncPublisher(n, document).collect(toList());
+                        List<AsyncConsumeHolder> asyncConsumeHolders = getAsyncConsumer(n, document).collect(toList());
+                        return new Flow(getNameOfFlow(n), references, asyncConsumeHolders, asyncPublishHolders);
                     })
                     .collect(toList());
             return new Configuration(muleConfigurationFile.getName(), flows);
@@ -70,7 +78,7 @@ public class XPathReferenceFinder implements ReferenceFinder {
                 asStream((NodeList) xPath.compile("descendant::*//text()[contains(., 'Mule::lookup') or contains(., 'lookup')]").evaluate(node, NODESET))
                         .flatMap(n ->
                                 asStream(lookupsInString.matcher(n.getNodeValue()))
-                                        .map(Reference::referenceCallViaLookup)
+                                        .map(LookupReference::new)
                         )
         );
     }
@@ -80,7 +88,7 @@ public class XPathReferenceFinder implements ReferenceFinder {
                 asStream((NodeList) xPath.compile("descendant::*//@*[contains(., 'Mule::lookup') or contains(., 'lookup')]").evaluate(node, NODESET))
                         .flatMap(n ->
                                 asStream(lookupsInString.matcher(n.getNodeValue()))
-                                        .map(Reference::referenceCallViaLookup)
+                                        .map(LookupReference::new)
                         )
         );
     }
@@ -97,7 +105,7 @@ public class XPathReferenceFinder implements ReferenceFinder {
                                 byte[] bytes = Files.readAllBytes(resourceDirectory.resolve(f));
                                 String content = new String(bytes, StandardCharsets.UTF_8);
                                 return asStream(lookupsInString.matcher(content))
-                                        .map(Reference::referenceCallViaLookup);
+                                        .map(LookupReference::new);
                             } catch (IOException ex) {
                                 return Stream.empty();
                             }
@@ -107,9 +115,23 @@ public class XPathReferenceFinder implements ReferenceFinder {
 
     protected Stream<ReferenceHolder> getReferencesInFlowRef(Node node) {
         return withXPath(xPath ->
-                asStream((NodeList) xPath.compile("descendant::flow-ref//@name").evaluate(node, NODESET))
+                asStream((NodeList) xPath.compile("descendant::*[local-name()='flow-ref']/@name").evaluate(node, NODESET))
                         .filter(n -> !(n.getNodeName().equals("doc:name")))
-                        .map(n -> Reference.referenceCallViaFlowRef(n.getNodeValue()))
+                        .map(n -> FlowReference.create(n.getNodeValue()))
+        );
+    }
+
+    protected Stream<AsyncPublishHolder> getAsyncPublisher(Node node, Document document) {
+        return withXPathNS(document, xPath ->
+                asStream((NodeList) xPath.compile("descendant::jms:publish/@destination").evaluate(node, NODESET))
+                        .map(n -> new JmsPublish(n.getNodeValue(), connectionRegistry))
+        );
+    }
+
+    protected Stream<AsyncConsumeHolder> getAsyncConsumer(Node node, Document document) {
+        return withXPathNS(document, xPath ->
+                asStream((NodeList) xPath.compile("(descendant::jms:consume/@destination) | (descendant::jms:listener/@destination)").evaluate(node, NODESET))
+                        .map(n -> new JmsConsume(n.getNodeValue(), connectionRegistry))
         );
     }
 
@@ -118,11 +140,13 @@ public class XPathReferenceFinder implements ReferenceFinder {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
             dbf.setXIncludeAware(false);
+            dbf.setNamespaceAware(true);
             DocumentBuilder builder = dbf.newDocumentBuilder();
             return builder.parse(Files.newInputStream(file.toPath()));
         } catch (IOException | ParserConfigurationException | SAXException ex) {
             throw new RuntimeException(ex);
         }
     }
+
 
 }

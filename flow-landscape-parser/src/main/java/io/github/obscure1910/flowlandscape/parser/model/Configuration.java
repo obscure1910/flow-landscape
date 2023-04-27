@@ -1,7 +1,7 @@
 package io.github.obscure1910.flowlandscape.parser.model;
 
 import io.github.obscure1910.flowlandscape.api.ConfigurationHolder;
-import io.github.obscure1910.flowlandscape.api.FlowHolder;
+import io.github.obscure1910.flowlandscape.api.flow.FlowHolder;
 
 import java.util.ArrayList;
 import java.util.List;

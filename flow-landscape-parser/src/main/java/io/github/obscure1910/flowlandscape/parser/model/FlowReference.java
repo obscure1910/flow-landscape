@@ -2,40 +2,22 @@ package io.github.obscure1910.flowlandscape.parser.model;
 
 
 import io.github.obscure1910.flowlandscape.api.ref.FlowRefReferenceHolder;
-import io.github.obscure1910.flowlandscape.api.ref.LookupReferenceHolder;
 
 import java.util.Objects;
 
 public class FlowReference implements FlowRefReferenceHolder {
+    private final String destinationName;
 
-    private final ReferenceCallType referenceCallType;
-    private final String referenceToFlowName;
-
-    private FlowReference(ReferenceCallType referenceCallType, String referenceToFlowName) {
-        this.referenceCallType = referenceCallType;
-        this.referenceToFlowName = referenceToFlowName;
+    private FlowReference(String referenceToFlowName) {
+        this.destinationName = referenceToFlowName;
     }
 
-    public static FlowReference referenceCallViaFlowRef(String referenceToFlowName) {
-        return new FlowReference(ReferenceCallType.FLOW, referenceToFlowName);
+    static public FlowRefReferenceHolder create(String destinationName) {
+        return new FlowReference(destinationName);
     }
-
-    public static FlowReference referenceCallViaLookup(String referenceToFlowName) {
-        return new FlowReference(ReferenceCallType.LOOKUP, referenceToFlowName);
-    }
-
-    public static FlowReference asyncReferenceCall(String referenceToQueue) {
-        return new FlowReference(ReferenceCallType.ASYNC, referenceToQueue);
-    }
-
     @Override
-    public ReferenceCallType getReferenceCallType() {
-        return this.referenceCallType;
-    }
-
-    @Override
-    public String getReferenceToFlowName() {
-        return this.referenceToFlowName;
+    public String getDestinationName() {
+        return this.destinationName;
     }
 
     @Override
@@ -43,24 +25,13 @@ public class FlowReference implements FlowRefReferenceHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FlowReference reference = (FlowReference) o;
+        FlowReference that = (FlowReference) o;
 
-        if (referenceCallType != reference.referenceCallType) return false;
-        return Objects.equals(referenceToFlowName, reference.referenceToFlowName);
+        return Objects.equals(destinationName, that.destinationName);
     }
 
     @Override
     public int hashCode() {
-        int result = referenceCallType != null ? referenceCallType.hashCode() : 0;
-        result = 31 * result + (referenceToFlowName != null ? referenceToFlowName.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Reference{" +
-                "referenceCallType=" + referenceCallType +
-                ", referenceToFlowName='" + referenceToFlowName + '\'' +
-                '}';
+        return destinationName != null ? destinationName.hashCode() : 0;
     }
 }

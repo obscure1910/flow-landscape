@@ -1,11 +1,11 @@
-package io.github.obscure1910.flowlandscape.parser.model.connection;
+package io.github.obscure1910.flowlandscape.api.connection;
 
-import io.github.obscure1910.flowlandscape.api.flow.AsyncFlowHolder;
-import io.github.obscure1910.flowlandscape.api.ref.AsyncReferenceHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncConsumeHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
 
 import java.util.Objects;
 
-public class ConnectionDefinition<A extends AsyncReferenceHolder, B extends AsyncFlowHolder> {
+public class ConnectionDefinition<A extends AsyncConsumeHolder, B extends AsyncPublishHolder> {
 
     private final Class<A> source;
     private final Class<B> target;
@@ -15,7 +15,7 @@ public class ConnectionDefinition<A extends AsyncReferenceHolder, B extends Asyn
         this.target = target;
     }
 
-    public static <A extends AsyncReferenceHolder, B extends AsyncFlowHolder> ConnectionDefinition<A, B> create(Class<A> source, Class<B> target) {
+    public static <A extends AsyncConsumeHolder, B extends AsyncPublishHolder> ConnectionDefinition<A, B> create(Class<A> source, Class<B> target) {
         return new ConnectionDefinition<>(source, target);
     }
 
@@ -25,14 +25,6 @@ public class ConnectionDefinition<A extends AsyncReferenceHolder, B extends Asyn
 
     public Class<B> getTarget() {
         return target;
-    }
-
-    public boolean isCompatibleSource(Class<?> source) {
-        return this.source.isAssignableFrom(source);
-    }
-
-    public boolean isCompatibleTarget(Class<?> target) {
-        return this.target.isAssignableFrom(target);
     }
 
     @Override

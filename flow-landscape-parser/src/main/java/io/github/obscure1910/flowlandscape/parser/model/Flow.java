@@ -1,7 +1,9 @@
 package io.github.obscure1910.flowlandscape.parser.model;
 
-import io.github.obscure1910.flowlandscape.api.FlowHolder;
-import io.github.obscure1910.flowlandscape.api.ReferenceHolder;
+import io.github.obscure1910.flowlandscape.api.flow.FlowHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncConsumeHolder;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
+import io.github.obscure1910.flowlandscape.api.ref.ReferenceHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +12,18 @@ import java.util.Objects;
 public class Flow implements FlowHolder {
 
     private final List<ReferenceHolder> flowReferences;
-    private final String name;
+    private final List<AsyncConsumeHolder> asyncConsumer;
+    private final List<AsyncPublishHolder> asyncPublisher;
+    private final String flowName;
 
-    public Flow(String name, List<ReferenceHolder> flowReferences) {
+    public Flow(String flowName,
+                List<ReferenceHolder> flowReferences,
+                List<AsyncConsumeHolder> asyncConsumer,
+                List<AsyncPublishHolder> asyncPublisher) {
         this.flowReferences = flowReferences;
-        this.name = name;
+        this.asyncConsumer = asyncConsumer;
+        this.asyncPublisher = asyncPublisher;
+        this.flowName = flowName;
     }
 
     @Override
@@ -23,8 +32,18 @@ public class Flow implements FlowHolder {
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public List<AsyncConsumeHolder> getAsyncConsumer() {
+        return new ArrayList<>(this.asyncConsumer);
+    }
+
+    @Override
+    public List<AsyncPublishHolder> getAsyncPublisher() {
+        return new ArrayList<>(this.asyncPublisher);
+    }
+
+    @Override
+    public String getFlowName() {
+        return this.flowName;
     }
 
     @Override
@@ -36,21 +55,16 @@ public class Flow implements FlowHolder {
 
         if (!Objects.equals(flowReferences, flow.flowReferences))
             return false;
-        return Objects.equals(name, flow.name);
+        if (!Objects.equals(asyncConsumer, flow.asyncConsumer))
+            return false;
+        return Objects.equals(flowName, flow.flowName);
     }
 
     @Override
     public int hashCode() {
         int result = flowReferences != null ? flowReferences.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (asyncConsumer != null ? asyncConsumer.hashCode() : 0);
+        result = 31 * result + (flowName != null ? flowName.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Flow{" +
-                "flowReferences=" + flowReferences +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

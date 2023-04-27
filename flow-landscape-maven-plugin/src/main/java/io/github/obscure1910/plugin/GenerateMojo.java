@@ -34,7 +34,7 @@ public class GenerateMojo extends AbstractMojo {
     public void execute() {
         Path sourceDirectory = new File(parserSourceDirectory).toPath();
         Path resourceDirectory = new File(parserResourceDirectory).toPath();
-        ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(sourceDirectory, resourceDirectory);
+        ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(sourceDirectory, resourceDirectory, true);
         Path generatorOutputDirectory = new File(imageOutputDirectory).toPath();
         GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline);
 
