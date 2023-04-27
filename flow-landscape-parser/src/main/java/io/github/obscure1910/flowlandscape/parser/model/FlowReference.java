@@ -1,26 +1,31 @@
 package io.github.obscure1910.flowlandscape.parser.model;
 
-import io.github.obscure1910.flowlandscape.api.ReferenceCallType;
-import io.github.obscure1910.flowlandscape.api.ReferenceHolder;
+
+import io.github.obscure1910.flowlandscape.api.ref.FlowRefReferenceHolder;
+import io.github.obscure1910.flowlandscape.api.ref.LookupReferenceHolder;
 
 import java.util.Objects;
 
-public class Reference implements ReferenceHolder {
+public class FlowReference implements FlowRefReferenceHolder {
 
     private final ReferenceCallType referenceCallType;
     private final String referenceToFlowName;
 
-    private Reference(ReferenceCallType referenceCallType, String referenceToFlowName) {
+    private FlowReference(ReferenceCallType referenceCallType, String referenceToFlowName) {
         this.referenceCallType = referenceCallType;
         this.referenceToFlowName = referenceToFlowName;
     }
 
-    public static Reference referenceCallViaFlowRef(String referenceToFlowName) {
-        return new Reference(ReferenceCallType.FLOW, referenceToFlowName);
+    public static FlowReference referenceCallViaFlowRef(String referenceToFlowName) {
+        return new FlowReference(ReferenceCallType.FLOW, referenceToFlowName);
     }
 
-    public static Reference referenceCallViaLookup(String referenceToFlowName) {
-        return new Reference(ReferenceCallType.LOOKUP, referenceToFlowName);
+    public static FlowReference referenceCallViaLookup(String referenceToFlowName) {
+        return new FlowReference(ReferenceCallType.LOOKUP, referenceToFlowName);
+    }
+
+    public static FlowReference asyncReferenceCall(String referenceToQueue) {
+        return new FlowReference(ReferenceCallType.ASYNC, referenceToQueue);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class Reference implements ReferenceHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Reference reference = (Reference) o;
+        FlowReference reference = (FlowReference) o;
 
         if (referenceCallType != reference.referenceCallType) return false;
         return Objects.equals(referenceToFlowName, reference.referenceToFlowName);
