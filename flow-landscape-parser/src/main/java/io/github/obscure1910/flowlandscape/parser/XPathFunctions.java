@@ -5,7 +5,9 @@ import org.w3c.dom.Document;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Optional;
 
 class XPathFunctions {
 
@@ -37,25 +39,31 @@ class XPathFunctions {
         //Store the source document to search the namespaces
         private final Document sourceDocument;
 
+        private final Namespace[] namespaces = new Namespace[]{
+                new Namespace("jms", "http://www.mulesoft.org/schema/mule/jms")
+        };
+
+        private Optional<String> findReverse(String str) {
+            return Arrays.stream(namespaces)
+                    .map(ns -> ns.reverse(str))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .findFirst();
+        }
+
         public NamespaceResolver(Document document) {
             sourceDocument = document;
         }
 
         //The lookup for the namespace uris is delegated to the stored document.
         public String getNamespaceURI(String prefix) {
-            if("jms".equals(prefix)) {
-                return "http://www.mulesoft.org/schema/mule/jms";
-            } else {
-                return sourceDocument.lookupNamespaceURI(prefix);
-            }
+            return findReverse(prefix)
+                    .orElseGet(() -> sourceDocument.lookupNamespaceURI(prefix));
         }
 
         public String getPrefix(String namespaceURI) {
-            if("http://www.mulesoft.org/schema/mule/jms".equals(namespaceURI)) {
-                return "jms";
-            } else {
-                return sourceDocument.lookupPrefix(namespaceURI);
-            }
+            return findReverse(namespaceURI)
+                    .orElseGet(() -> sourceDocument.lookupPrefix(namespaceURI));
         }
 
         @SuppressWarnings("rawtypes")
