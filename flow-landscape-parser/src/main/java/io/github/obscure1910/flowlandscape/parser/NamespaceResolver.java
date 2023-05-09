@@ -42,4 +42,5 @@ public class NamespaceResolver implements NamespaceContext {
     public Iterator getPrefixes(String namespaceURI) {
         return null;
     }
+
 }

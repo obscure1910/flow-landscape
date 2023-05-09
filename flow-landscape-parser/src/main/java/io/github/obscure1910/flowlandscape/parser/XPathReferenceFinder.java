@@ -37,7 +37,7 @@ import static javax.xml.xpath.XPathConstants.NODESET;
 public class XPathReferenceFinder implements ReferenceFinder {
 
     private final Pattern lookupsInString = Pattern.compile("(?<=((Mule::|\\s|\\[|\\()lookup)(\\(\")).*(?=\")");
-    private final ConnectionRegistry connectionRegistry= new KnownConnections();
+    private final ConnectionRegistry connectionRegistry = new KnownConnections();
 
     @Override
     public List<ConfigurationHolder> findReferences(ReferenceFinderProperties referenceFinderProperties) {
@@ -122,16 +122,21 @@ public class XPathReferenceFinder implements ReferenceFinder {
     }
 
     protected Stream<AsyncPublishHolder> getAsyncPublisher(Node node, Document document) {
+
         return withXPathNS(document, xPath ->
-                asStream((NodeList) xPath.compile("descendant::jms:publish/@destination").evaluate(node, NODESET))
-                        .map(n -> new JmsPublish(n.getNodeValue(), connectionRegistry))
+                streamConcat(
+                        asStream((NodeList) xPath.compile("descendant::jms:publish/@destination").evaluate(node, NODESET))
+                                .map(n -> JmsPublish.create(n.getNodeValue(), connectionRegistry))
+                )
         );
     }
 
     protected Stream<AsyncConsumeHolder> getAsyncConsumer(Node node, Document document) {
         return withXPathNS(document, xPath ->
-                asStream((NodeList) xPath.compile("(descendant::jms:consume/@destination) | (descendant::jms:listener/@destination)").evaluate(node, NODESET))
-                        .map(n -> new JmsConsume(n.getNodeValue(), connectionRegistry))
+                streamConcat(
+                        asStream((NodeList) xPath.compile("(descendant::jms:consume/@destination) | (descendant::jms:listener/@destination)").evaluate(node, NODESET))
+                                .map(n -> JmsConsume.create(n.getNodeValue(), connectionRegistry))
+                )
         );
     }
 

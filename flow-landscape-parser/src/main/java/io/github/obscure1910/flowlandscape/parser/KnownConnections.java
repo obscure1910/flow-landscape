@@ -14,4 +14,7 @@ public class KnownConnections extends ConnectionRegistry {
                 ConnectionDefinition.create(JmsConsume.class, JmsPublish.class)
         ));
     }
+
+
+
 }

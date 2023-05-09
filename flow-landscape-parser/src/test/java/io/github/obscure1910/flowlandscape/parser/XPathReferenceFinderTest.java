@@ -3,10 +3,11 @@ package io.github.obscure1910.flowlandscape.parser;
 import io.github.obscure1910.flowlandscape.api.ConfigurationHolder;
 import io.github.obscure1910.flowlandscape.api.ReferenceFinder;
 import io.github.obscure1910.flowlandscape.api.ReferenceFinderProperties;
-import io.github.obscure1910.flowlandscape.parser.model.Configuration;
-import io.github.obscure1910.flowlandscape.parser.model.Flow;
-import io.github.obscure1910.flowlandscape.parser.model.FlowReference;
-import io.github.obscure1910.flowlandscape.parser.model.LookupReference;
+import io.github.obscure1910.flowlandscape.api.ref.AsyncReferenceHolder;
+import io.github.obscure1910.flowlandscape.parser.model.*;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,12 +15,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 class XPathReferenceFinderTest {
 
@@ -73,7 +75,7 @@ class XPathReferenceFinderTest {
                                 emptyList())
                 )));
 
-        assertThat(configurations, hasItems(expected.toArray(new ConfigurationHolder[0])));
+        assertThat(configurations).hasSameElementsAs(expected);
     }
 
     @Test
@@ -84,9 +86,35 @@ class XPathReferenceFinderTest {
         );
 
         List<ConfigurationHolder> configurations = ctbt.findReferences(referenceFinderProperties);
-        System.out.println("sd");
 
+        List<Tuple> configurationsAsTuples = configurations.stream().flatMap(c ->
+                c.getFlows().stream().map(f ->
+                        tuple(
+                                f.getFlowName(),
+                                f.getFlowReferences(),
+                                f.getAsyncConsumer().stream().map(AsyncReferenceHolder::getDestinationName).collect(Collectors.toList()),
+                                f.getAsyncPublisher().stream().map(AsyncReferenceHolder::getDestinationName).collect(Collectors.toList())
+                        )
+                )
+        ).collect(Collectors.toList());
 
+        List<Tuple> expected = asList(
+                //FlowName, FlowReferences, AsyncConsumer, AsyncPublisher
+                tuple("jms-flow1", emptyList(), emptyList(), singletonList("myqueue")),
+                tuple("jms-flow2", emptyList(), singletonList("myqueue"), emptyList()),
+                tuple("jms-flow3", emptyList(), singletonList("myqueue"), emptyList())
+        );
+
+        assertThat(configurationsAsTuples).hasSameElementsAs(expected);
+    }
+
+    @Test
+    public void equalsHashCodeContracts() {
+        EqualsVerifier
+                .forPackage("io.github.obscure1910.flowlandscape.parser")
+                .except(XPathReferenceFinder.class, NamespaceResolver.class)
+                .suppress(Warning.STRICT_INHERITANCE, Warning.INHERITED_DIRECTLY_FROM_OBJECT)
+                .verify();
     }
 
 }

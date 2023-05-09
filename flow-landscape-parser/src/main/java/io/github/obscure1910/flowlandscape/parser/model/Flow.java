@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Flow implements FlowHolder {
+public final class Flow implements FlowHolder {
 
     private final List<ReferenceHolder> flowReferences;
     private final List<AsyncConsumeHolder> asyncConsumer;
@@ -49,22 +49,23 @@ public class Flow implements FlowHolder {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Flow)) return false;
         Flow flow = (Flow) o;
-
-        if (!Objects.equals(flowReferences, flow.flowReferences))
-            return false;
-        if (!Objects.equals(asyncConsumer, flow.asyncConsumer))
-            return false;
-        return Objects.equals(flowName, flow.flowName);
+        return Objects.equals(flowReferences, flow.flowReferences) && Objects.equals(asyncConsumer, flow.asyncConsumer) && Objects.equals(asyncPublisher, flow.asyncPublisher) && Objects.equals(flowName, flow.flowName);
     }
 
     @Override
     public int hashCode() {
-        int result = flowReferences != null ? flowReferences.hashCode() : 0;
-        result = 31 * result + (asyncConsumer != null ? asyncConsumer.hashCode() : 0);
-        result = 31 * result + (flowName != null ? flowName.hashCode() : 0);
-        return result;
+        return Objects.hash(flowReferences, asyncConsumer, asyncPublisher, flowName);
+    }
+
+    @Override
+    public String toString() {
+        return "Flow{" +
+                "flowReferences=" + flowReferences +
+                ", asyncConsumer=" + asyncConsumer +
+                ", asyncPublisher=" + asyncPublisher +
+                ", flowName='" + flowName + '\'' +
+                '}';
     }
 }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Configuration implements ConfigurationHolder {
+public final class Configuration implements ConfigurationHolder {
 
     private final String name;
     private final List<FlowHolder> flows;
@@ -28,19 +28,14 @@ public class Configuration implements ConfigurationHolder {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Configuration)) return false;
         Configuration that = (Configuration) o;
-
-        if (!Objects.equals(name, that.name)) return false;
-        return Objects.equals(flows, that.flows);
+        return Objects.equals(name, that.name) && Objects.equals(flows, that.flows);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (flows != null ? flows.hashCode() : 0);
-        return result;
+        return Objects.hash(name, flows);
     }
 
     @Override

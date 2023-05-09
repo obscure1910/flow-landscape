@@ -5,7 +5,7 @@ import io.github.obscure1910.flowlandscape.api.ref.FlowRefReferenceHolder;
 
 import java.util.Objects;
 
-public class FlowReference implements FlowRefReferenceHolder {
+public final class FlowReference implements FlowRefReferenceHolder {
     private final String destinationName;
 
     private FlowReference(String referenceToFlowName) {
@@ -23,15 +23,20 @@ public class FlowReference implements FlowRefReferenceHolder {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof FlowReference)) return false;
         FlowReference that = (FlowReference) o;
-
         return Objects.equals(destinationName, that.destinationName);
     }
 
     @Override
     public int hashCode() {
-        return destinationName != null ? destinationName.hashCode() : 0;
+        return Objects.hash(destinationName);
+    }
+
+    @Override
+    public String toString() {
+        return "FlowReference{" +
+                "destinationName='" + destinationName + '\'' +
+                '}';
     }
 }

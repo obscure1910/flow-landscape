@@ -26,18 +26,13 @@ public class Namespace {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Namespace)) return false;
         Namespace namespace = (Namespace) o;
-
-        if (!Objects.equals(prefix, namespace.prefix)) return false;
-        return Objects.equals(uri, namespace.uri);
+        return Objects.equals(prefix, namespace.prefix) && Objects.equals(uri, namespace.uri);
     }
 
     @Override
     public int hashCode() {
-        int result = prefix != null ? prefix.hashCode() : 0;
-        result = 31 * result + (uri != null ? uri.hashCode() : 0);
-        return result;
+        return Objects.hash(prefix, uri);
     }
 }

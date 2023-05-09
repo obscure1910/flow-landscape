@@ -6,6 +6,7 @@ import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 abstract public class ConnectionRegistry {
 
@@ -25,4 +26,16 @@ abstract public class ConnectionRegistry {
                 && source.getDestinationName().equals(target.getDestinationName());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ConnectionRegistry)) return false;
+        ConnectionRegistry that = (ConnectionRegistry) o;
+        return Objects.equals(knownConnections, that.knownConnections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(knownConnections);
+    }
 }

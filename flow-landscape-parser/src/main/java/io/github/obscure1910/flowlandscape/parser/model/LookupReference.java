@@ -4,7 +4,7 @@ import io.github.obscure1910.flowlandscape.api.ref.LookupReferenceHolder;
 
 import java.util.Objects;
 
-public class LookupReference implements LookupReferenceHolder {
+public final class LookupReference implements LookupReferenceHolder {
 
     private final String destinationName;
 
@@ -23,16 +23,20 @@ public class LookupReference implements LookupReferenceHolder {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof LookupReference)) return false;
         LookupReference that = (LookupReference) o;
-
         return Objects.equals(destinationName, that.destinationName);
     }
 
     @Override
     public int hashCode() {
-        return destinationName != null ? destinationName.hashCode() : 0;
+        return Objects.hash(destinationName);
     }
 
+    @Override
+    public String toString() {
+        return "LookupReference{" +
+                "destinationName='" + destinationName + '\'' +
+                '}';
+    }
 }
