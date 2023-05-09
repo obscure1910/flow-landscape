@@ -31,23 +31,14 @@ public class GeneratorProperties {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof GeneratorProperties)) return false;
         GeneratorProperties that = (GeneratorProperties) o;
-
-        if (!Objects.equals(outputDirectory, that.outputDirectory))
-            return false;
-        if (!Objects.equals(spaceBetweenElements, that.spaceBetweenElements))
-            return false;
-        return Objects.equals(headLine, that.headLine);
+        return Objects.equals(outputDirectory, that.outputDirectory) && Objects.equals(spaceBetweenElements, that.spaceBetweenElements) && Objects.equals(headLine, that.headLine);
     }
 
     @Override
     public int hashCode() {
-        int result = outputDirectory != null ? outputDirectory.hashCode() : 0;
-        result = 31 * result + (spaceBetweenElements != null ? spaceBetweenElements.hashCode() : 0);
-        result = 31 * result + (headLine != null ? headLine.hashCode() : 0);
-        return result;
+        return Objects.hash(outputDirectory, spaceBetweenElements, headLine);
     }
 
     @Override

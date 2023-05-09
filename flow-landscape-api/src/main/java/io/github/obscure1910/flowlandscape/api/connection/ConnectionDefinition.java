@@ -30,19 +30,14 @@ public class ConnectionDefinition<A extends AsyncConsumeHolder, B extends AsyncP
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof ConnectionDefinition)) return false;
         ConnectionDefinition<?, ?> that = (ConnectionDefinition<?, ?>) o;
-
-        if (!Objects.equals(source, that.source)) return false;
-        return Objects.equals(target, that.target);
+        return Objects.equals(source, that.source) && Objects.equals(target, that.target);
     }
 
     @Override
     public int hashCode() {
-        int result = source != null ? source.hashCode() : 0;
-        result = 31 * result + (target != null ? target.hashCode() : 0);
-        return result;
+        return Objects.hash(source, target);
     }
 
     @Override

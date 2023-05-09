@@ -24,19 +24,13 @@ public class ReferenceFinderProperties {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof ReferenceFinderProperties)) return false;
         ReferenceFinderProperties that = (ReferenceFinderProperties) o;
-
-        if (!Objects.equals(sourceDirectory, that.sourceDirectory))
-            return false;
-        return Objects.equals(resourceDirectory, that.resourceDirectory);
+        return Objects.equals(sourceDirectory, that.sourceDirectory) && Objects.equals(resourceDirectory, that.resourceDirectory);
     }
 
     @Override
     public int hashCode() {
-        int result = sourceDirectory != null ? sourceDirectory.hashCode() : 0;
-        result = 31 * result + (resourceDirectory != null ? resourceDirectory.hashCode() : 0);
-        return result;
+        return Objects.hash(sourceDirectory, resourceDirectory);
     }
 }

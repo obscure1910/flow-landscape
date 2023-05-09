@@ -109,7 +109,7 @@ class XPathReferenceFinderTest {
     }
 
     @Test
-    public void equalsHashCodeContracts() {
+    public void equalsHashCodeContractTest() {
         EqualsVerifier
                 .forPackage("io.github.obscure1910.flowlandscape.parser")
                 .except(XPathReferenceFinder.class, NamespaceResolver.class)
