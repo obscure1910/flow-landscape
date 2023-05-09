@@ -7,12 +7,10 @@ public class ReferenceFinderProperties {
 
     private final Path sourceDirectory;
     private final Path resourceDirectory;
-    private final boolean findAsyncReferences;
 
-    public ReferenceFinderProperties(Path sourceDirectory, Path resourceDirectory, boolean findAsyncReferences) {
+    public ReferenceFinderProperties(Path sourceDirectory, Path resourceDirectory) {
         this.sourceDirectory = sourceDirectory;
         this.resourceDirectory = resourceDirectory;
-        this.findAsyncReferences = findAsyncReferences;
     }
 
     public Path getSourceDirectory() {
@@ -23,10 +21,6 @@ public class ReferenceFinderProperties {
         return resourceDirectory;
     }
 
-    public boolean isFindAsyncReferences() {
-        return findAsyncReferences;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,7 +28,6 @@ public class ReferenceFinderProperties {
 
         ReferenceFinderProperties that = (ReferenceFinderProperties) o;
 
-        if (findAsyncReferences != that.findAsyncReferences) return false;
         if (!Objects.equals(sourceDirectory, that.sourceDirectory))
             return false;
         return Objects.equals(resourceDirectory, that.resourceDirectory);
@@ -44,7 +37,6 @@ public class ReferenceFinderProperties {
     public int hashCode() {
         int result = sourceDirectory != null ? sourceDirectory.hashCode() : 0;
         result = 31 * result + (resourceDirectory != null ? resourceDirectory.hashCode() : 0);
-        result = 31 * result + (findAsyncReferences ? 1 : 0);
         return result;
     }
 }

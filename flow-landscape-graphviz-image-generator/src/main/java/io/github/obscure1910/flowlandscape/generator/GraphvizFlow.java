@@ -4,6 +4,7 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Node;
+import io.github.obscure1910.flowlandscape.api.connection.ConnectionRegistry;
 import io.github.obscure1910.flowlandscape.api.flow.FlowHolder;
 import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
 import io.github.obscure1910.flowlandscape.api.ref.FlowRefReferenceHolder;
@@ -20,6 +21,7 @@ public class GraphvizFlow {
     public final FlowHolder flowHolder;
     public final Node node;
     public final String clusterName;
+
 
     public GraphvizFlow(FlowHolder flowHolder, String clusterName) {
         this.flowHolder = flowHolder;

@@ -30,8 +30,7 @@ class XPathReferenceFinderTest {
     void findReferencesTest(String muleVersion) throws IOException {
         ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(
                 new File("src/test/resources/" + muleVersion + "/ref/configurations/").toPath(),
-                new File("src/test/resources/" + muleVersion + "/ref/mappings/").toPath(),
-                false
+                new File("src/test/resources/" + muleVersion + "/ref/mappings/").toPath()
         );
 
         List<ConfigurationHolder> configurations = ctbt.findReferences(referenceFinderProperties);
@@ -81,8 +80,7 @@ class XPathReferenceFinderTest {
     void findAsyncReferencesMule4Test() {
         ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(
                 new File("src/test/resources/mule4/jms/configurations/").toPath(),
-                new File("src/test/resources/mule4/jms/mappings/").toPath(),
-                true
+                new File("src/test/resources/mule4/jms/mappings/").toPath()
         );
 
         List<ConfigurationHolder> configurations = ctbt.findReferences(referenceFinderProperties);

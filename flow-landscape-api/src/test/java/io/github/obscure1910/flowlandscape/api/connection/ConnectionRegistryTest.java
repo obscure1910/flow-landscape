@@ -14,10 +14,11 @@ class ConnectionRegistryTest {
     void isCompatibleTest() {
         AsyncPublishHolder p = createAsyncPublishHolder("myqueue");
         AsyncConsumeHolder c = createAsyncConsumeHolder("myqueue");
-        ConnectionRegistry cr = new ConnectionRegistry (
+        ConnectionRegistry cr = new ConnectionRegistry(
                 singletonList(
                         ConnectionDefinition.create(c.getClass(), p.getClass())
-                )){};
+                )) {
+        };
         assertTrue(cr.isCompatible(c.getClass(), p.getClass()));
     }
 
@@ -29,7 +30,8 @@ class ConnectionRegistryTest {
         ConnectionRegistry cr = new ConnectionRegistry(
                 singletonList(
                         ConnectionDefinition.create(c1.getClass(), p.getClass())
-                )){};
+                )) {
+        };
         assertFalse(cr.isCompatible(c2.getClass(), p.getClass()));
     }
 
@@ -40,7 +42,8 @@ class ConnectionRegistryTest {
         ConnectionRegistry cr = new ConnectionRegistry(
                 singletonList(
                         ConnectionDefinition.create(c.getClass(), p.getClass())
-                )){};
+                )) {
+        };
         assertTrue(cr.hasSameDestination(c, p));
     }
 
@@ -51,17 +54,13 @@ class ConnectionRegistryTest {
         ConnectionRegistry cr = new ConnectionRegistry(
                 singletonList(
                         ConnectionDefinition.create(c.getClass(), p.getClass())
-                )){};
+                )) {
+        };
         assertFalse(cr.hasSameDestination(c, p));
     }
 
     AsyncPublishHolder createAsyncPublishHolder(String destinationName) {
-        return new AsyncPublishHolder() {
-            @Override
-            public boolean hasSameDestination(AsyncConsumeHolder other) {
-                return false;
-            }
-
+        return new AsyncPublishHolder(null, null) {
             @Override
             public String getDestinationName() {
                 return destinationName;
@@ -70,11 +69,7 @@ class ConnectionRegistryTest {
     }
 
     AsyncConsumeHolder createAsyncConsumeHolder(String destinationName) {
-        return new AsyncConsumeHolder() {
-            @Override
-            public boolean hasSameDestination(AsyncPublishHolder other) {
-                return false;
-            }
+        return new AsyncConsumeHolder(null, null) {
 
             @Override
             public String getDestinationName() {
@@ -84,11 +79,7 @@ class ConnectionRegistryTest {
     }
 
     AsyncConsumeHolder createOtherAsyncConsumeHolder(String destinationName) {
-        return new AsyncConsumeHolder() {
-            @Override
-            public boolean hasSameDestination(AsyncPublishHolder other) {
-                return false;
-            }
+        return new AsyncConsumeHolder(null, null) {
 
             @Override
             public String getDestinationName() {

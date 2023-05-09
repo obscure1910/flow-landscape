@@ -1,7 +1,18 @@
 package io.github.obscure1910.flowlandscape.api.ref;
 
-public interface AsyncConsumeHolder extends AsyncReferenceHolder {
+import io.github.obscure1910.flowlandscape.api.connection.ConnectionRegistry;
 
-    boolean hasSameDestination(AsyncPublishHolder other);
+public abstract class AsyncConsumeHolder extends AsyncReferenceHolder {
+
+    private final ConnectionRegistry connectionRegistry;
+
+    public AsyncConsumeHolder(String destinationName, ConnectionRegistry connectionRegistry) {
+        super(destinationName);
+        this.connectionRegistry = connectionRegistry;
+    }
+
+    public boolean hasSameDestination(AsyncPublishHolder other) {
+        return connectionRegistry.hasSameDestination(this, other);
+    }
 
 }
