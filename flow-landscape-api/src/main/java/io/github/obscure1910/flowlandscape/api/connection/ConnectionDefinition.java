@@ -5,25 +5,25 @@ import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
 
 import java.util.Objects;
 
-public class ConnectionDefinition<A extends AsyncConsumeHolder, B extends AsyncPublishHolder> {
+public class ConnectionDefinition {
 
-    private final Class<A> source;
-    private final Class<B> target;
+    private final Class<? extends AsyncConsumeHolder> source;
+    private final Class<? extends AsyncPublishHolder> target;
 
-    private ConnectionDefinition(Class<A> source, Class<B> target) {
+    private ConnectionDefinition(Class<? extends AsyncConsumeHolder> source, Class<? extends AsyncPublishHolder> target) {
         this.source = source;
         this.target = target;
     }
 
-    public static <A extends AsyncConsumeHolder, B extends AsyncPublishHolder> ConnectionDefinition<A, B> create(Class<A> source, Class<B> target) {
-        return new ConnectionDefinition<>(source, target);
+    public static ConnectionDefinition create(Class<? extends AsyncConsumeHolder> source, Class<? extends AsyncPublishHolder> target) {
+        return new ConnectionDefinition(source, target);
     }
 
-    public Class<A> getSource() {
+    public Class<? extends AsyncConsumeHolder> getSource() {
         return source;
     }
 
-    public Class<B> getTarget() {
+    public Class<? extends AsyncPublishHolder> getTarget() {
         return target;
     }
 
@@ -31,7 +31,7 @@ public class ConnectionDefinition<A extends AsyncConsumeHolder, B extends AsyncP
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ConnectionDefinition)) return false;
-        ConnectionDefinition<?, ?> that = (ConnectionDefinition<?, ?>) o;
+        ConnectionDefinition that = (ConnectionDefinition) o;
         return Objects.equals(source, that.source) && Objects.equals(target, that.target);
     }
 

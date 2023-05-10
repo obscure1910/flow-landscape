@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="fb86e2ff-2ea1-41e8-b8ef-346491bf8a22" >
+		<jms:active-mq-connection />
+	</jms:config>
+	<flow name="flowlandscape-email-flow" doc:id="97282da8-5c4c-4445-80eb-644e68e57144" >
+		<jms:listener doc:name="On New Message" doc:id="8639dbcf-9afb-46be-bbfc-9c4747e2a043" config-ref="JMS_Config" destination="queue" ackMode="AUTO"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6aae971a-ae08-4956-a6f0-cc167968732c" />
+	</flow>
+</mule>

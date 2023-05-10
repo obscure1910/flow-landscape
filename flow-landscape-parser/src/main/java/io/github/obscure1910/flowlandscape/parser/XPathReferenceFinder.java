@@ -125,8 +125,10 @@ public class XPathReferenceFinder implements ReferenceFinder {
 
         return withXPathNS(document, xPath ->
                 streamConcat(
-                        asStream((NodeList) xPath.compile("descendant::jms:publish/@destination").evaluate(node, NODESET))
-                                .map(n -> JmsPublish.create(n.getNodeValue(), connectionRegistry))
+                        asStream((NodeList) xPath.compile("(descendant::jms:publish/@destination) | (descendant::jms:outbound-endpoint/@queue)").evaluate(node, NODESET))
+                                .map(n -> JmsPublish.create(n.getNodeValue(), connectionRegistry)),
+                        asStream((NodeList) xPath.compile("descendant::vm:publish/@queueName").evaluate(node, NODESET))
+                                .map(n -> VmPublish.create(n.getNodeValue(), connectionRegistry))
                 )
         );
     }
@@ -134,8 +136,10 @@ public class XPathReferenceFinder implements ReferenceFinder {
     protected Stream<AsyncConsumeHolder> getAsyncConsumer(Node node, Document document) {
         return withXPathNS(document, xPath ->
                 streamConcat(
-                        asStream((NodeList) xPath.compile("(descendant::jms:consume/@destination) | (descendant::jms:listener/@destination)").evaluate(node, NODESET))
-                                .map(n -> JmsConsume.create(n.getNodeValue(), connectionRegistry))
+                        asStream((NodeList) xPath.compile("(descendant::jms:consume/@destination) | (descendant::jms:listener/@destination) | (descendant::jms:inbound-endpoint/@queue)").evaluate(node, NODESET))
+                                .map(n -> JmsConsume.create(n.getNodeValue(), connectionRegistry)),
+                        asStream((NodeList) xPath.compile("(descendant::vm:consume/@queueName) | (descendant::vm:listener/@queueName)").evaluate(node, NODESET))
+                                .map(n -> VmConsume.create(n.getNodeValue(), connectionRegistry))
                 )
         );
     }

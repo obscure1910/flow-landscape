@@ -31,24 +31,24 @@
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
-                <groupId>io.github.obscure1910</groupId>
-                <artifactId>flow-landscape-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                	<imageHeadline>${project.name}</imageHeadline>
-                	<parserSourceDirectory>src/main/mule/</parserSourceDirectory>
-                	<imageSpaceBetweenElements>1.5</imageSpaceBetweenElements>
-                	<imageOutputDirectory>flowlandscape/</imageOutputDirectory>
-                	<parserResourceDirectory>src/main/resources/</parserResourceDirectory>
-                </configuration>
-            </plugin>
+				<groupId>io.github.obscure1910</groupId>
+				<artifactId>flow-landscape-maven-plugin</artifactId>
+				<version>1.1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<imageHeadline>${project.name}</imageHeadline>
+					<parserSourceDirectory>src/main/mule/</parserSourceDirectory>
+					<imageSpaceBetweenElements>1.5</imageSpaceBetweenElements>
+					<imageOutputDirectory>flowlandscape/</imageOutputDirectory>
+					<parserResourceDirectory>src/main/resources/</parserResourceDirectory>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -63,6 +63,12 @@
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-sockets-connector</artifactId>
 			<version>1.2.2</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-jms-connector</artifactId>
+			<version>1.8.4</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>

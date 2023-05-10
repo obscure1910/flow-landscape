@@ -10,18 +10,18 @@ import java.util.Objects;
 
 abstract public class ConnectionRegistry {
 
-    private final List<ConnectionDefinition<? extends AsyncConsumeHolder, ? extends AsyncPublishHolder>> knownConnections;
+    private final List<ConnectionDefinition> knownConnections;
 
-    public <X extends AsyncConsumeHolder, Y extends AsyncPublishHolder> ConnectionRegistry(List<ConnectionDefinition<X , Y>> knownConnections) {
+    public ConnectionRegistry(List<ConnectionDefinition> knownConnections) {
         this.knownConnections = Collections.synchronizedList(new ArrayList<>(knownConnections));
     }
 
-    public boolean isCompatible(Class<? extends AsyncConsumeHolder> source, Class<? extends AsyncPublishHolder> target) {
+    public boolean isCompatible(Class<?> source, Class<?> target) {
         return knownConnections.stream()
                 .anyMatch(cd -> cd.getSource().equals(source) && cd.getTarget().equals(target));
     }
 
-    public <X extends AsyncConsumeHolder, Y extends AsyncPublishHolder> boolean hasSameDestination(X source, Y target) {
+    public boolean hasSameDestination(AsyncConsumeHolder source, AsyncPublishHolder target) {
         return isCompatible(source.getClass(), target.getClass())
                 && source.getDestinationName().equals(target.getDestinationName());
     }

@@ -79,7 +79,7 @@ class XPathReferenceFinderTest {
     }
 
     @Test
-    void findAsyncReferencesMule4Test() {
+    void findAsyncJmsReferencesMule4Test() {
         ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(
                 new File("src/test/resources/mule4/jms/configurations/").toPath(),
                 new File("src/test/resources/mule4/jms/mappings/").toPath()
@@ -103,6 +103,66 @@ class XPathReferenceFinderTest {
                 tuple("jms-flow1", emptyList(), emptyList(), singletonList("myqueue")),
                 tuple("jms-flow2", emptyList(), singletonList("myqueue"), emptyList()),
                 tuple("jms-flow3", emptyList(), singletonList("myqueue"), emptyList())
+        );
+
+        assertThat(configurationsAsTuples).hasSameElementsAs(expected);
+    }
+
+    @Test
+    void findAsyncJmsReferencesMule3Test() {
+        ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(
+                new File("src/test/resources/mule3/jms/configurations/").toPath(),
+                new File("src/test/resources/mule3/jms/mappings/").toPath()
+        );
+
+        List<ConfigurationHolder> configurations = ctbt.findReferences(referenceFinderProperties);
+
+        List<Tuple> configurationsAsTuples = configurations.stream().flatMap(c ->
+                c.getFlows().stream().map(f ->
+                        tuple(
+                                f.getFlowName(),
+                                f.getFlowReferences(),
+                                f.getAsyncConsumer().stream().map(AsyncReferenceHolder::getDestinationName).collect(Collectors.toList()),
+                                f.getAsyncPublisher().stream().map(AsyncReferenceHolder::getDestinationName).collect(Collectors.toList())
+                        )
+                )
+        ).collect(Collectors.toList());
+
+        List<Tuple> expected = asList(
+                //FlowName, FlowReferences, AsyncConsumer, AsyncPublisher
+                tuple("jms-flow1", emptyList(), emptyList(), singletonList("myqueue")),
+                tuple("jms-flow2", emptyList(), singletonList("myqueue"), emptyList())
+        );
+
+        assertThat(configurationsAsTuples).hasSameElementsAs(expected);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"mule3", "mule4"})
+    void findAsyncVmReferencesTest(String muleVersion) {
+        ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(
+                new File("src/test/resources/" + muleVersion + "/vm/configurations/").toPath(),
+                new File("src/test/resources/" + muleVersion + "/vm/mappings/").toPath()
+        );
+
+        List<ConfigurationHolder> configurations = ctbt.findReferences(referenceFinderProperties);
+
+        List<Tuple> configurationsAsTuples = configurations.stream().flatMap(c ->
+                c.getFlows().stream().map(f ->
+                        tuple(
+                                f.getFlowName(),
+                                f.getFlowReferences(),
+                                f.getAsyncConsumer().stream().map(AsyncReferenceHolder::getDestinationName).collect(Collectors.toList()),
+                                f.getAsyncPublisher().stream().map(AsyncReferenceHolder::getDestinationName).collect(Collectors.toList())
+                        )
+                )
+        ).collect(Collectors.toList());
+
+        List<Tuple> expected = asList(
+                //FlowName, FlowReferences, AsyncConsumer, AsyncPublisher
+                tuple("vm-flow1", emptyList(), emptyList(), singletonList("myqueue")),
+                tuple("vm-flow2", emptyList(), singletonList("myqueue"), emptyList()),
+                tuple("vm-flow3", emptyList(), singletonList("myqueue"), emptyList())
         );
 
         assertThat(configurationsAsTuples).hasSameElementsAs(expected);
