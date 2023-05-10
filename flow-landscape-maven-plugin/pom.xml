@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>flow-landscape-maven-plugin</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>flow-landscape-maven-plugin Maven Plugin</name>
@@ -19,7 +19,7 @@
   <parent>
     <groupId>io.github.obscure1910</groupId>
     <artifactId>flow-landscape</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -67,12 +67,12 @@
     <dependency>
       <groupId>io.github.obscure1910</groupId>
       <artifactId>flow-landscape-parser</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.github.obscure1910</groupId>
       <artifactId>flow-landscape-graphviz-image-generator</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
