@@ -21,6 +21,9 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(property = "imageHeadline", defaultValue = "FlowLandscape")
     String imageHeadline;
 
+    @Parameter(property = "imageFont", defaultValue = "Arial")
+    String imageFont;
+
     @Parameter(property = "imageOutputDirectory", defaultValue = "flowlandscape/")
     String imageOutputDirectory;
 
@@ -36,7 +39,7 @@ public class GenerateMojo extends AbstractMojo {
         Path resourceDirectory = new File(parserResourceDirectory).toPath();
         ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(sourceDirectory, resourceDirectory);
         Path generatorOutputDirectory = new File(imageOutputDirectory).toPath();
-        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline);
+        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline, imageFont);
 
         ReferenceFinder finder = new XPathReferenceFinder();
         List<ConfigurationHolder> configurations = finder.findReferences(referenceFinderProperties);

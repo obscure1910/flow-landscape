@@ -3,7 +3,8 @@
 This plugin creates a component overview of all flows and shows their dependencies. 
 - Dependencies via "flow-ref" are black arrows. 
 - Dependencies via "lookup" are red dashed arrows 
-- Dependencies via "jms" or "vm" are blue arrows. 
+- Dependencies via "jms" or "vm" are blue arrows.
+
 This plugin works for Mule3 and Mule4.
 
 ## install
@@ -16,7 +17,7 @@ Add this plugin to your pom.xml
     <plugin>
         <groupId>io.github.obscure1910</groupId>
         <artifactId>flow-landscape-maven-plugin</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2</version>
         <executions>
             <execution>
                 <goals>
@@ -28,6 +29,7 @@ Add this plugin to your pom.xml
             <imageHeadline>${project.name}</imageHeadline>
             <imageSpaceBetweenElements>1.5</imageSpaceBetweenElements>
             <imageOutputDirectory>flowlandscape/</imageOutputDirectory>
+            <imageFont>Times-Roman</imageFont>
             <parserSourceDirectory>src/main/mule/</parserSourceDirectory>
             <parserResourceDirectory>src/main/resources/</parserResourceDirectory>
         </configuration>
@@ -41,7 +43,7 @@ Add this plugin to your pom.xml
 
 In the Folder `flowlandscape-example` is a Mule4 application that generates the following diagram
 
-<img src="flowlandscape-example/flowlandscape/flowlandscape.png"
+<img src="flow-landscape-example/flowlandscape/flowlandscape.png"
      alt="Markdown Monster icon"
      style="height: 600px; margin-left: auto; margin-right: auto; display:block; text-align:center" />
 

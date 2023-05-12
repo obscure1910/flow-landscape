@@ -33,7 +33,7 @@ public class GraphvizFlowLandscape implements FlowLandscapeGenerator {
     public void generateConfigurations(List<ConfigurationHolder> configurations, GeneratorProperties generatorProperties) {
         Set<GraphvizFlow> allNodes = configurations.stream().flatMap(configuration -> configuration.getFlows().stream().map(flow -> {
             String clusterName = configuration.getName().trim();
-            return new GraphvizFlow(flow, "[ " + clusterName + " ]"); //with brackets because otherwise the global.xml will be ignored
+            return new GraphvizFlow(flow, "[ " + clusterName + " ]", generatorProperties.getFontName()); //with brackets because otherwise the global.xml will be ignored
         })).collect(toSet());
 
         Stream<GraphvizFlow> allNodesWithClusterInternalLinks = foldLeft(allNodes.stream(), empty(), (acc, graphvizFlow) ->
@@ -70,6 +70,7 @@ public class GraphvizFlowLandscape implements FlowLandscapeGenerator {
                 .directed()
                 .graphAttr().with(
                         Label.of(generatorProperties.getHeadLine()).locate(TOP),
+                        Font.name(generatorProperties.getFontName()),
                         splines(ORTHO),
                         sepEqually(generatorProperties.getSpaceBetweenElements())
                 )

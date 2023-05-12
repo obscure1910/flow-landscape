@@ -1,6 +1,7 @@
 package io.github.obscure1910.flowlandscape.generator;
 
 import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Shape;
 import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.model.Node;
@@ -20,18 +21,20 @@ public class GraphvizFlow {
     public final FlowHolder flowHolder;
     public final Node node;
     public final String clusterName;
+    public final String fontName;
 
-
-    public GraphvizFlow(FlowHolder flowHolder, String clusterName) {
+    public GraphvizFlow(FlowHolder flowHolder, String clusterName, String fontName) {
         this.flowHolder = flowHolder;
-        this.node = node(flowHolder.getFlowName()).with(Shape.RECTANGLE, Color.WHEAT1.striped());
+        this.node = node(flowHolder.getFlowName()).with(Shape.RECTANGLE, Color.WHEAT1.striped(), Font.name(fontName));
         this.clusterName = clusterName;
+        this.fontName = fontName;
     }
 
-    private GraphvizFlow(FlowHolder flowHolder, Node node, String clusterName) {
+    private GraphvizFlow(FlowHolder flowHolder, Node node, String clusterName, String fontName) {
         this.flowHolder = flowHolder;
         this.node = node;
         this.clusterName = clusterName;
+        this.fontName = fontName;
     }
 
     public GraphvizFlow addLinkTo(GraphvizFlow other) {
@@ -52,14 +55,14 @@ public class GraphvizFlow {
         return optRh
                 .map(rh -> {
                     if (rh instanceof FlowRefReferenceHolder) {
-                        return new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget())), this.clusterName);
+                        return new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget())), this.clusterName, this.fontName);
                     } else {
-                        return new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget()).with(Color.RED, Style.DASHED)), this.clusterName);
+                        return new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget()).with(Color.RED, Style.DASHED)), this.clusterName, this.fontName);
                     }
                 })
                 .orElseGet(() ->
                         optArh
-                                .map(arh -> new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget()).with(Color.CYAN)), this.clusterName))
+                                .map(arh -> new GraphvizFlow(this.flowHolder, node.link(to(other.node.asLinkTarget()).with(Color.CYAN)), this.clusterName, this.fontName))
                                 .orElse(this)
                 );
     }
@@ -79,32 +82,5 @@ public class GraphvizFlow {
         return hasFlowReference || hasAsyncReference;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        GraphvizFlow that = (GraphvizFlow) o;
-
-        if (!Objects.equals(flowHolder, that.flowHolder)) return false;
-        if (!Objects.equals(node, that.node)) return false;
-        return Objects.equals(clusterName, that.clusterName);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = flowHolder != null ? flowHolder.hashCode() : 0;
-        result = 31 * result + (node != null ? node.hashCode() : 0);
-        result = 31 * result + (clusterName != null ? clusterName.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "GraphvizFlow{" +
-                "flowHolder=" + flowHolder +
-                ", node=" + node +
-                ", clusterName='" + clusterName + '\'' +
-                '}';
-    }
 }
