@@ -14,6 +14,11 @@ import java.util.concurrent.Callable;
         description = "Creates a component overview of all flows and shows their dependencies")
 public class Flowlandscape implements Callable<Integer> {
 
+    @CommandLine.Option(names = {"-f", "--imageFont"},
+            defaultValue = "Times-Roman",
+            description = "Font used in the diagram.")
+    private String imageFont;
+
     @CommandLine.Option(names = {"-h", "--imageHeadline"},
             defaultValue = "flow-landscape",
             description = "Headline that is generated into the image.")
@@ -51,7 +56,7 @@ public class Flowlandscape implements Callable<Integer> {
         Path resourceDirectory = new File(parserResourceDirectory).toPath();
         ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(sourceDirectory, resourceDirectory);
         Path generatorOutputDirectory = new File(imageOutputDirectory).toPath();
-        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline);
+        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline, imageFont);
 
         ReferenceFinder finder = new XPathReferenceFinder();
         List<ConfigurationHolder> configurations = finder.findReferences(referenceFinderProperties);

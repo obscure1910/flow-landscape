@@ -5,16 +5,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>flow-landscape-cli</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.1.4-SNAPSHOT</version>
 
   <name>flow-landscape-cli</name>
-  <description>ACLI for flow-land-scape image generator</description>
+  <description>A CLI for flow-land-scape image generator</description>
   <url>https://github.com/obscure1910/flow-landscape</url>
 
   <parent>
     <groupId>io.github.obscure1910</groupId>
     <artifactId>flow-landscape</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.4-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -32,12 +32,12 @@
     <dependency>
       <groupId>io.github.obscure1910</groupId>
       <artifactId>flow-landscape-parser</artifactId>
-      <version>1.1.1</version>
+      <version>1.1.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.github.obscure1910</groupId>
       <artifactId>flow-landscape-graphviz-image-generator</artifactId>
-      <version>1.1.1</version>
+      <version>1.1.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
