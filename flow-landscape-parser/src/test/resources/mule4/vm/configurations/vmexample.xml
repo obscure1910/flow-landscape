@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	  xmlns="http://www.mulesoft.org/schema/mule/core"
+	  xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="00515959-627e-4432-b811-011b18dda413" >
@@ -20,5 +20,9 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 	<flow name="vm-flow3" doc:id="581056b9-6c1a-4974-b135-d4922a263e45" >
 		<logger level="INFO" doc:name="Logger" doc:id="39afe364-8d09-43b9-9264-f18490c68fb3" />
 		<vm:consume doc:name="Consume" doc:id="6b88f1c5-13db-4711-8b32-59fb6c5bbf81" config-ref="VM_Config" queueName="myqueue"/>
+	</flow>
+	<flow name="vm-flow4" doc:id="fdc046e1-69e7-4505-9ac3-40f7a61e6967" >
+		<logger level="INFO" doc:name="Logger" doc:id="1534868d-566c-4f6b-b3a3-c17554e0026d" />
+		<vm:publish-consume doc:name="Publish consume" doc:id="cf8b37d0-b4e1-4262-ad12-9e95170bcb89" config-ref="VM_Config" queueName="myqueue"/>
 	</flow>
 </mule>

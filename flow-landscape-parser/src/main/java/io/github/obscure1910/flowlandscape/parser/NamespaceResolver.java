@@ -13,7 +13,8 @@ public class NamespaceResolver implements NamespaceContext {
 
     private final Namespace[] namespaces = new Namespace[]{
             new Namespace("jms", "http://www.mulesoft.org/schema/mule/jms"),
-            new Namespace("vm", "http://www.mulesoft.org/schema/mule/vm")
+            new Namespace("vm", "http://www.mulesoft.org/schema/mule/vm"),
+            new Namespace("ibm-mq", "http://www.mulesoft.org/schema/mule/ibm-mq")
     };
 
     private Optional<String> findReverse(String str) {

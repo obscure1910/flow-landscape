@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq" xmlns="http://www.mulesoft.org/schema/mule/core"
+	  xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ibm-mq http://www.mulesoft.org/schema/mule/ibm-mq/current/mule-ibm-mq.xsd">
+	<ibm-mq:config name="IBM_MQ_Config" doc:name="IBM MQ Config" doc:id="bf04bf87-6a4b-43b9-9dfd-89823b49843f" >
+		<ibm-mq:connection >
+			<ibm-mq:connection-mode >
+				<ibm-mq:binding />
+			</ibm-mq:connection-mode>
+		</ibm-mq:connection>
+	</ibm-mq:config>
+	<flow name="mq-flow1" doc:id="f097c500-44d2-4efe-bebf-acaa08c65161" >
+		<logger level="INFO" doc:name="Logger" doc:id="a015b0ef-7758-4b10-bc3b-ac1e8c98c400" />
+		<ibm-mq:publish doc:name="Publish" doc:id="bef898f9-aa4f-430e-b40e-eaca269f6a48" config-ref="IBM_MQ_Config" destination="myqueue"/>
+	</flow>
+	<flow name="mq-flow2" doc:id="ad444aae-645f-4b1a-8781-eed088f6e58f" >
+		<ibm-mq:listener doc:name="On New Message" doc:id="7bfbe370-d26a-4ff6-9d67-e1b73eeeaee0" config-ref="IBM_MQ_Config" destination="myqueue"/>
+		<logger level="INFO" doc:name="Logger" doc:id="cd1caa1c-f0a7-4c8b-aad0-a11e188296fc" />
+	</flow>
+	<flow name="mq-flow3" doc:id="e3968ffa-ec13-45e3-b91d-c37de0773440" >
+		<logger level="INFO" doc:name="Logger" doc:id="3f57cc89-0bea-4fab-8396-e1e90292c795" />
+		<ibm-mq:consume doc:name="Consume" doc:id="299c6d88-b6db-4ee9-961c-046cfb050539" config-ref="IBM_MQ_Config" destination="myqueue"/>
+	</flow>
+	<flow name="mq-flow4" doc:id="4a9d5477-0f67-48d0-84e7-67fafbd9eebf" >
+		<ibm-mq:publish-consume doc:name="Publish consume" doc:id="5cda580c-97f0-4a7b-9fec-54bbeb146409" config-ref="IBM_MQ_Config" destination="myqueue"/>
+	</flow>
+</mule>

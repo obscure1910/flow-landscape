@@ -125,10 +125,12 @@ public class XPathReferenceFinder implements ReferenceFinder {
 
         return withXPathNS(document, xPath ->
                 streamConcat(
-                        asStream((NodeList) xPath.compile("(descendant::jms:publish/@destination) | (descendant::jms:outbound-endpoint/@queue)").evaluate(node, NODESET))
+                        asStream((NodeList) xPath.compile("(descendant::jms:publish/@destination) | (descendant::jms:publish-consume/@destination) | (descendant::jms:outbound-endpoint/@queue)").evaluate(node, NODESET))
                                 .map(n -> JmsPublish.create(n.getNodeValue(), connectionRegistry)),
-                        asStream((NodeList) xPath.compile("descendant::vm:publish/@queueName").evaluate(node, NODESET))
-                                .map(n -> VmPublish.create(n.getNodeValue(), connectionRegistry))
+                        asStream((NodeList) xPath.compile("(descendant::vm:publish/@queueName) | (descendant::vm:publish-consume/@queueName) | (descendant::vm:outbound-endpoint/@path)").evaluate(node, NODESET))
+                                .map(n -> VmPublish.create(n.getNodeValue(), connectionRegistry)),
+                        asStream((NodeList) xPath.compile("(descendant::ibm-mq:publish/@destination) | (descendant::ibm-mq:publish-consume/@destination)").evaluate(node, NODESET))
+                                .map(n -> IbmMqPublish.create(n.getNodeValue(), connectionRegistry))
                 )
         );
     }
@@ -138,8 +140,10 @@ public class XPathReferenceFinder implements ReferenceFinder {
                 streamConcat(
                         asStream((NodeList) xPath.compile("(descendant::jms:consume/@destination) | (descendant::jms:listener/@destination) | (descendant::jms:inbound-endpoint/@queue)").evaluate(node, NODESET))
                                 .map(n -> JmsConsume.create(n.getNodeValue(), connectionRegistry)),
-                        asStream((NodeList) xPath.compile("(descendant::vm:consume/@queueName) | (descendant::vm:listener/@queueName)").evaluate(node, NODESET))
-                                .map(n -> VmConsume.create(n.getNodeValue(), connectionRegistry))
+                        asStream((NodeList) xPath.compile("(descendant::vm:consume/@queueName) | (descendant::vm:listener/@queueName) | (descendant::vm:inbound-endpoint/@path)").evaluate(node, NODESET))
+                                .map(n -> VmConsume.create(n.getNodeValue(), connectionRegistry)),
+                        asStream((NodeList) xPath.compile("(descendant::ibm-mq:consume/@destination) | (descendant::ibm-mq:listener/@destination)").evaluate(node, NODESET))
+                                .map(n -> IbmMqConsume.create(n.getNodeValue(), connectionRegistry))
                 )
         );
     }
