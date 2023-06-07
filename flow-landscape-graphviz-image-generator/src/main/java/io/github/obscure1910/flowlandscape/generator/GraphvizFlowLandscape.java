@@ -77,7 +77,11 @@ public class GraphvizFlowLandscape implements FlowLandscapeGenerator {
                 .with(clusters);
 
         try {
-            Graphviz.fromGraph(g).width(12000).render(Format.PNG).toFile(generatorProperties.getOutputDirectory().resolve("flowlandscape.png").toFile());
+            Format format = Format.valueOf(generatorProperties.getFormat().getType());
+            String extension = generatorProperties.getFormat().getExtension();
+            int totalMemory = generatorProperties.getTotalMemory();
+            int width = generatorProperties.getWidth();
+            Graphviz.fromGraph(g).totalMemory(totalMemory).width(width).render(format).toFile(generatorProperties.getOutputDirectory().resolve("flowlandscape." + extension).toFile());
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

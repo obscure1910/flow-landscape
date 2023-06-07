@@ -16,32 +16,47 @@ public class Flowlandscape implements Callable<Integer> {
 
     @CommandLine.Option(names = {"-f", "--imageFont"},
             defaultValue = "Times-Roman",
-            description = "Font used in the diagram.")
+            description = "Font used in the diagram. Default: ${DEFAULT-VALUE}")
     private String imageFont;
 
     @CommandLine.Option(names = {"-h", "--imageHeadline"},
             defaultValue = "flow-landscape",
-            description = "Headline that is generated into the image.")
+            description = "Headline that is generated into the image. Default: ${DEFAULT-VALUE}")
     private String imageHeadline;
 
     @CommandLine.Option(names = {"-o", "--imageOutputDirectory"},
             defaultValue = "flowlandscape/",
-            description = "Directory where the generated image should be saved.")
+            description = "Directory where the generated image should be saved. Default: ${DEFAULT-VALUE}")
     private String imageOutputDirectory;
+
+    @CommandLine.Option(names = {"-t", "--imageFormat"},
+            defaultValue = "PNG",
+            description = "Supported image formats (SVG or PNG). Default: ${DEFAULT-VALUE}")
+    private String imageFormat;
+
+    @CommandLine.Option(names = {"-m", "--imageTotalMemory"},
+            defaultValue = "33554432",
+            description = "How much memory can be used by the generator in order to create the image. Default: ${DEFAULT-VALUE}")
+    private int imageTotalMemory;
+
+    @CommandLine.Option(names = {"-w", "--imageWidth"},
+            defaultValue = "12000",
+            description = "Width. Default: ${DEFAULT-VALUE}")
+    private int imageWidth;
 
     @CommandLine.Option(names = {"-s", "--parserSourceDirectory"},
             defaultValue = "src/main/mule/",
-            description = "Directory of mule configuration files.")
+            description = "Directory of mule configuration files. Default: ${DEFAULT-VALUE}")
     private String parserSourceDirectory;
 
     @CommandLine.Option(names = {"-r", "--parserResourceDirectory"},
             defaultValue = "src/main/resources/",
-            description = "Directory of resource files.")
+            description = "Directory of resource files. Default: ${DEFAULT-VALUE}")
     private String parserResourceDirectory;
 
     @CommandLine.Option(names = {"-b", "--imageSpaceBetweenElements"},
             defaultValue = "1.5",
-            description = "Space between flows.")
+            description = "Space between flows. Default: ${DEFAULT-VALUE}")
     private Double imageSpaceBetweenElements;
 
     @CommandLine.Option(names = {"-V", "--version"}, versionHelp = true, description = "display version info")
@@ -56,7 +71,8 @@ public class Flowlandscape implements Callable<Integer> {
         Path resourceDirectory = new File(parserResourceDirectory).toPath();
         ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(sourceDirectory, resourceDirectory);
         Path generatorOutputDirectory = new File(imageOutputDirectory).toPath();
-        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline, imageFont);
+        ImageFormat format = ImageFormat.valueOf(imageFormat);
+        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline, imageFont, format, imageTotalMemory, imageWidth);
 
         ReferenceFinder finder = new XPathReferenceFinder();
         List<ConfigurationHolder> configurations = finder.findReferences(referenceFinderProperties);

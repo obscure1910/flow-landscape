@@ -24,6 +24,15 @@ public class GenerateMojo extends AbstractMojo {
     @Parameter(property = "imageFont", defaultValue = "Arial")
     String imageFont;
 
+    @Parameter(property = "imageTotalMemory", defaultValue = "33554432")
+    int imageTotalMemory;
+
+    @Parameter(property = "imageFormat", defaultValue = "PNG")
+    String imageFormat;
+
+    @Parameter(property = "imageWidth", defaultValue = "12000")
+    int imageWidth;
+
     @Parameter(property = "imageOutputDirectory", defaultValue = "flowlandscape/")
     String imageOutputDirectory;
 
@@ -39,7 +48,7 @@ public class GenerateMojo extends AbstractMojo {
         Path resourceDirectory = new File(parserResourceDirectory).toPath();
         ReferenceFinderProperties referenceFinderProperties = new ReferenceFinderProperties(sourceDirectory, resourceDirectory);
         Path generatorOutputDirectory = new File(imageOutputDirectory).toPath();
-        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline, imageFont);
+        GeneratorProperties generatorProperties = new GeneratorProperties(generatorOutputDirectory, imageSpaceBetweenElements, imageHeadline, imageFont, ImageFormat.valueOf(imageFormat), imageTotalMemory, imageWidth);
 
         ReferenceFinder finder = new XPathReferenceFinder();
         List<ConfigurationHolder> configurations = finder.findReferences(referenceFinderProperties);
