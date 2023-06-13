@@ -7,6 +7,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.COMPILE)
 public class GenerateMojo extends AbstractMojo {
+
+    private static final Logger logger = LoggerFactory.getLogger("Flow-Landscape");
 
     @Parameter(property = "imageSpaceBetweenElements", defaultValue = "2.0")
     Double imageSpaceBetweenElements;
@@ -54,5 +58,6 @@ public class GenerateMojo extends AbstractMojo {
         List<ConfigurationHolder> configurations = finder.findReferences(referenceFinderProperties);
         FlowLandscapeGenerator generator = new GraphvizFlowLandscape();
         generator.generateConfigurations(configurations, generatorProperties);
+        logger.info("Successfully generated image with Flow-Landscape! The generated image has been copied to the folder: {}", imageOutputDirectory);
     }
 }

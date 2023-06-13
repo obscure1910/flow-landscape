@@ -3,6 +3,8 @@ package io.github.obscure1910;
 import io.github.obscure1910.flowlandscape.api.*;
 import io.github.obscure1910.flowlandscape.generator.GraphvizFlowLandscape;
 import io.github.obscure1910.flowlandscape.parser.XPathReferenceFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.File;
@@ -13,6 +15,8 @@ import java.util.concurrent.Callable;
 @CommandLine.Command(name = "flowlandscape", mixinStandardHelpOptions = true, version = "flowlandscape cli  1.1.4",
         description = "Creates a component overview of all flows and shows their dependencies")
 public class Flowlandscape implements Callable<Integer> {
+
+    private static final Logger logger = LoggerFactory.getLogger(Flowlandscape.class);
 
     @CommandLine.Option(names = {"-f", "--imageFont"},
             defaultValue = "Times-Roman",
@@ -78,6 +82,7 @@ public class Flowlandscape implements Callable<Integer> {
         List<ConfigurationHolder> configurations = finder.findReferences(referenceFinderProperties);
         FlowLandscapeGenerator generator = new GraphvizFlowLandscape();
         generator.generateConfigurations(configurations, generatorProperties);
+        logger.info("Successfully generated image with Flow-Landscape! The generated image has been copied to the folder: {}", imageOutputDirectory);
         return 1;
     }
 
