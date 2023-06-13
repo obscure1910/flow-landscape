@@ -4,8 +4,7 @@ import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Style;
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.LinkSource;
 import io.github.obscure1910.flowlandscape.api.ConfigurationHolder;
@@ -13,6 +12,7 @@ import io.github.obscure1910.flowlandscape.api.FlowLandscapeGenerator;
 import io.github.obscure1910.flowlandscape.api.GeneratorProperties;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -81,6 +81,7 @@ public class GraphvizFlowLandscape implements FlowLandscapeGenerator {
             String extension = generatorProperties.getFormat().getExtension();
             int totalMemory = generatorProperties.getTotalMemory();
             int width = generatorProperties.getWidth();
+            Graphviz.useEngine(Arrays.asList(new GraphvizV8Engine(), new GraphvizCmdLineEngine()));
             Graphviz.fromGraph(g).totalMemory(totalMemory).width(width).render(format).toFile(generatorProperties.getOutputDirectory().resolve("flowlandscape." + extension).toFile());
         } catch (IOException ex) {
             throw new RuntimeException(ex);
