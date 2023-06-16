@@ -64,7 +64,7 @@ Add this plugin to your pom.xml
     <plugin>
         <groupId>io.github.obscure1910</groupId>
         <artifactId>flow-landscape-maven-plugin</artifactId>
-        <version>1.1.4</version>
+        <version>1.1.5</version>
         <executions>
             <execution>
                 <goals>
