@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "flowlandscape", mixinStandardHelpOptions = true, version = "flowlandscape cli  1.1.4",
+@CommandLine.Command(name = "flowlandscape", mixinStandardHelpOptions = true, version = "flowlandscape cli  1.1.7",
         description = "Creates a component overview of all flows and shows their dependencies")
 public class Flowlandscape implements Callable<Integer> {
 
