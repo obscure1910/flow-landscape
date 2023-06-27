@@ -36,7 +36,7 @@ import static javax.xml.xpath.XPathConstants.NODESET;
 
 public class XPathReferenceFinder implements ReferenceFinder {
 
-    private final Pattern lookupsInString = Pattern.compile("(?<=((Mule::|\\s|\\[|\\()lookup)(\\(\")).*(?=\")");
+    private final Pattern lookupsInString = Pattern.compile("(?<=((Mule::|\\s|\\[|\\()lookup)(\\((\"))|\\(('))[^(\"|')]*");;
     private final ConnectionRegistry connectionRegistry = new KnownConnections();
 
     @Override
