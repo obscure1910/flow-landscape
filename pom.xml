@@ -5,7 +5,7 @@
   <groupId>io.github.obscure1910</groupId>
   <artifactId>flow-landscape</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.8-SNAPSHOT</version>
+  <version>1.1.8</version>
 
   <name>flow-landscape</name>
   <description>Maven plugin for Mule3 and Mule4 to create a component map to detect static dependencies between flows</description>
@@ -28,7 +28,7 @@
     <connection>scm:git:ssh://git@github.com/obscure1910/flow-landscape</connection>
     <developerConnection>scm:git:ssh://git@github.com/obscure1910/flow-landscape.git</developerConnection>
     <url>https://github.com/obscure1910/flow-landscape/tree/main</url>
-    <tag>flow-landscape-1.1.4</tag>
+    <tag>flow-landscape-1.1.8</tag>
   </scm>
 
   <modules>
@@ -259,17 +259,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <version>3.0.0</version>
@@ -281,6 +270,15 @@
           <checkModificationExcludes>
             <checkModificationExclude>**/pom.xml</checkModificationExclude>
           </checkModificationExcludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.5.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
         </configuration>
       </plugin>
     </plugins>
