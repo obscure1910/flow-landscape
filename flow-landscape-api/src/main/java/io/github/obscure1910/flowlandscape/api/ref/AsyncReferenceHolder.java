@@ -1,7 +1,5 @@
 package io.github.obscure1910.flowlandscape.api.ref;
 
-import io.github.obscure1910.flowlandscape.api.connection.ConnectionRegistry;
-
 import java.util.Objects;
 
 public abstract class AsyncReferenceHolder implements ReferenceHolder {

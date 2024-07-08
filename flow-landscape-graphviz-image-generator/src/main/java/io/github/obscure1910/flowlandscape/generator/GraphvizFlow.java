@@ -10,7 +10,6 @@ import io.github.obscure1910.flowlandscape.api.ref.AsyncPublishHolder;
 import io.github.obscure1910.flowlandscape.api.ref.FlowRefReferenceHolder;
 import io.github.obscure1910.flowlandscape.api.ref.ReferenceHolder;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static guru.nidi.graphviz.model.Factory.node;
